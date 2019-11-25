@@ -194,9 +194,4 @@ hist(rSG[[i]][f.zz & g2[[i]]], add=T, col=2, freq=F )
 
 ```
  
- 
-# Personal genomes 
-```{r}
- 
-```
   
