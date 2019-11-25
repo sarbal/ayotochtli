@@ -435,9 +435,4 @@ mtext(ylab, side=2, line=1, outer=TRUE, adj=0,
 dev.off() 
 
 ```
-
-
-#Twins data from WHO 
-```{r}
-
-```
+ 
