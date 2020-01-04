@@ -2,6 +2,7 @@
 #### Perfect predictor genes 
 Genes that were able to predict armadillos across time, per quad can be found in this file: 
 - perfect.pred.arm.Rdata 
+
 This contains a matrix (perfect.pred) of dimensions 33374 (genes) by 5 (quads).  
 
 The human and mouse homologs of thees genes are in these files: 
@@ -9,9 +10,9 @@ The human and mouse homologs of thees genes are in these files:
 - perfect.pred.mouse.Rdata
 
 Each contains these: 
-perfect.pred.<species> -> matrix, genes by quad
-perfect.pred.<species>.list -> list of genes for each of the five quads 
-homol.all2 -> gene conversion ids between species 
+- perfect.pred.<species> -> matrix, genes by quad
+- perfect.pred.<species>.list -> list of genes for each of the five quads 
+- homol.all2 -> gene conversion ids between species 
 
 ### Code
 #### Perfect predictors
