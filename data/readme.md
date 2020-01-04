@@ -21,7 +21,7 @@ Each contains these:
 - homol.all2 -> gene conversion ids between species 
 
 ### Code
-See notebooks[../notebooks] for all the analyses. 
+See [notebooks](../notebooks/) for all the analyses. 
 
 #### Perfect predictors
 ```
