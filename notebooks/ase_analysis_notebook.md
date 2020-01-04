@@ -4,12 +4,12 @@ output: html_notebook
 ---
 # ASE data 
 ```{r}
-load("U:/armadillo/genomes/rna_fastq/counts_adj/exprs.all.Rdata")
-load("U:/armadillo/metadata.Rdata")
-source("Z:/useful4.r")
-load("U:/armadillo/updated/ase_ratios.test_train.Rdata")
-load("U:/armadillo/updated/gene_annotations_v0.95_mod.Rdata")
-load("U:/armadillo//armadillo.helper.Rdata")
+load("exprs.all.Rdata")
+load("metadata.Rdata")
+source("useful.r")
+load("ase_ratios.test_train.Rdata")
+load("gene_annotations_v0.95_mod.Rdata")
+load("armadillo.helper.Rdata")
 # Variables 
 n_quads = 5
 n_times = 3 
