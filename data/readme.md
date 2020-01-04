@@ -1,5 +1,3 @@
-### Files 
-
 ### Data
 #### Perfect predictor genes 
 Genes that were able to predict armadillos across time, per quad can be found in this file: 
@@ -18,7 +16,7 @@ homol.all2 -> gene conversion ids between species
 ### Code
 #### Perfect predictors
 ```
-load("ref.strand.")
+load("ref.strand.test_train.Rdata")
 hist(pred.all[f.zz,], breaks=c(-1:4), col=magma(5), main="", xlab="Gene scores", sub=dataset)
 hist(predcor.all[f.zz,], col=viridis(20), main="Testing", sub=dataset, xlab="Correlations")
 hist(cor.all[f.zz,], col=viridis(20), main="Training", sub=dataset, xlab="Correlations")
