@@ -5,13 +5,13 @@ output: html_notebook
 
 # Load data
 ```{r}
-source("Z:/useful4.r")
-load("U:/armadillo/updated/cpm.strand.comb.Rdata")
-load("U:/armadillo/updated/counts.strand.comb.Rdata")
-load("U:/armadillo/updated/gene_annotations_v0.95_mod.Rdata")
-load("U:/armadillo//armadillo.helper.Rdata")
-load("U:/armadillo/updated/armadillo_hem.Rdata")
-load("U:/armadillo/updated/ref.strand.test_train.Rdata")
+source("useful.r")
+load("cpm.strand.comb.Rdata")
+load("counts.strand.comb.Rdata")
+load("gene_annotations_v0.95_mod.Rdata")
+load("armadillo.helper.Rdata")
+load("armadillo_hem.Rdata")
+load("ref.strand.test_train.Rdata")
 # Variables 
 N = dim(X.cpm.all)[1]
 n_quads = 5
@@ -286,7 +286,7 @@ indv = pData$Ind[pData$Quad == j]
 
 # anovaresults <- apply(X.cpm.all[,pData$Quad == j], 1, aof, indv, time)
  
-load(file=paste0("U:/armadillo/updated/anova.quad",j,".Rdata")) 
+load(file=paste0("anova.quad",j,".Rdata")) 
 temp.1 <- unlist(lapply(anovaresults, function(x) { x["Pr(>F)"][1,] }))
 temp.2 <- matrix(temp.1, length(anovaresults),1, byrow=T)
 dimnames(temp.2) <- list(names(anovaresults), dimnames(anovaresults[[1]])[[1]][1])
@@ -312,7 +312,7 @@ pdf("u:/armadillo/updated/anova.plots.pdf")
 for(j in 1:n_quads){ 
   nnj = min(as.numeric(pData$altID[pData$Quad==j]))  - 1 
   
-  load(paste0("U:/armadillo/updated/anova.quad",j,".Rdata"))
+  load(paste0("anova.quad",j,".Rdata"))
   
   quad.hi.p = data.frame(pvalues[f.zz,1][ which(pvalues[f.zz] < 0.05)])
   quad.hi.pdata <- X.cpm.all[ row.names(quad.hi.p), ]
@@ -641,7 +641,7 @@ save( cr,cr.sd , cr.se , rand.q, nr3,  file=paste0("random.sets.", dataset, ".Rd
 
 # Plot
 ```{r}
-load(paste0("U:/armadilo/updated/random.sets.", dataset, ".Rdata") )
+load(paste0("random.sets.", dataset, ".Rdata") )
 
 Y_c = cr[-1]
 X_c = log10(nr3)[-1]
@@ -696,7 +696,7 @@ for(j in 1:n_quads){
  heatmap.3(temp4, main=quads[j], col=cividis(5))
 } 
 
-pdf("U:/armadillo/updated/heatmaps.modules.pdf")
+pdf("heatmaps.modules.pdf")
 for(j in 1:n_quads){ 
  temp4 =  cor(t(X.rank2[f.zz,][which(perfect.pred[f.zz,j]==1),pData$Quad==j]), m="s")
  heatmap.3(temp4, main=quads[j], col=magma(10))
@@ -706,7 +706,7 @@ dev.off()
 ```
 
 ```{r}
-pdf("U:/armadillo/updated/perfect.pred.prop.pdf")
+pdf("perfect.pred.prop.pdf")
 hist(log2(1+X.cpm.all[f.zz,]), 
      freq=F, 
      col=viridis(10)[5], 
@@ -897,7 +897,7 @@ for (r in 1:1000){
 
 ## Prefect predictor nulls
 ```{r}
-load(file="U:/armadillo/updated/null.perfect.pred.Rdata")
+load(file="null.perfect.pred.Rdata")
 
 
 hist(unlist(rand.all ) , freq=F, col="grey", border=NA, xlim=c(0,100))
@@ -919,7 +919,7 @@ abline(v= perfect.pred.ns.mean , col=4, lwd=2)
 ```
 ## Perfect predictors model 2  (null)
 ```{r, eval = FALSE}
-load("U:/armadillo/updated/model.pred.cds.Rdata")
+load("model.pred.cds.Rdata")
 
 xlab="Number of genes"
 ylab="Average score"
@@ -942,8 +942,8 @@ points(X_c, Y_c, ylim = c(ymin, ymax) , pch=19, cex=0.5)
 
 ## Perfect predictors model 3 (distributed)
 ```{r, eval = FALSE}
-load("U:/armadillo/updated/distr.model.comb.Rdata")
-load("U:/armadillo/updated/models/model.means.shuff.Rdata")
+load("distr.model.comb.Rdata")
+load("models/model.means.shuff.Rdata")
 
 
 means.propv = sapply(1:length(fracs), function(fi) mean( unlist(rand.propv[[fi]]),na.rm=T))
@@ -1004,7 +1004,7 @@ filled.contour( log10(maxns), propve2.fcs[1:51], ylim=c(0.16,0.5), t( cd.dist.ma
 
 ## B: X scaffold genes 
 ```{r}
-load("U:/armadillo/updated/Xscaffolds.Rdata")
+load("Xscaffolds.Rdata")
  
  
   pred.temp = matrix(0, ncol=3, nrow=5)
@@ -1083,7 +1083,7 @@ abline(v=1, col=2, lty=2)
 
 ## C: ASE feature genes 
 ```{r}
-load("U:/armadillo/updated/ase.feature.genes.Rdata")
+load("ase.feature.genes.Rdata")
  
  
   pred.temp = matrix(0, ncol=3, nrow=5)
@@ -1287,7 +1287,7 @@ aurocs.loo = list()
 summary.aurocs.clust.loo = list()
 
 for(j in 1:n_quads){
-load(file=paste("U:/armadillo/coexp/rocs.perfect.pred.clust.coexp.quad.loo",j,"Rdata", sep=".") ) 
+load(file=paste("coexp/rocs.perfect.pred.clust.coexp.quad.loo",j,"Rdata", sep=".") ) 
   aurocs.loo[[j]] = aurocs[[1]][1:6,]
   summary.aurocs.clust.loo[[j]] = aurocs[[1]][-(1:6),]
 }
@@ -1296,7 +1296,7 @@ aurocs.circ = list()
 summary.aurocs.clust.circ = list()
 
 for(j in 1:n_quads){
-load(file=paste("U:/armadillo/coexp/rocs.perfect.pred.clust.coexp.quad",j,"Rdata", sep=".") ) 
+load(file=paste("coexp/rocs.perfect.pred.clust.coexp.quad",j,"Rdata", sep=".") ) 
   aurocs.circ[[j]] = aurocs[[1]][1:6,]
   summary.aurocs.clust.circ[[j]] = aurocs[[1]][-(1:6),]
 }
@@ -1333,11 +1333,11 @@ abline(v= mean( unlist(aurocs.loo.list[[i]] )), col=1, lwd=2)
 
 ## GO for armadillos
 ```{r}
-load("Y:/human/GO/March2019/GO.human.Rdata")
+load("GO.human.Rdata")
 gosums = colSums(GO.human.nonIEA )
 annot =  GO.human.nonIEA 
 
-load("U:/armadillo/coexp/coexp.aggr.Rdata")
+load("coexp/coexp.aggr.Rdata")
 library(EGAD)
 
 # Only use homologs
@@ -1364,13 +1364,11 @@ save(aurocs.go1, file="aurocs.go1.arm.clust.Rdata")
 ## Human co-expression evaluation
 ```{r, eval=FALSE} 
 
-load("Y:/genome/gene_annotations_v29.Rdata")
-load("~/sballouz/genome/gene_annotations_v29.Rdata")
+load("gene_annotations_v29.Rdata")
 attr.human = attr
-load("Y:/armadillo/ensembl/gene_annotations_v0.95_mod.Rdata")
-load("~/sballouz/armadillo/ensembl/gene_annotations_v0.95_mod.Rdata")
+load("gene_annotations_v0.95_mod.Rdata")
 attr.arm = attr
-
+### this file is too large, need to upload somewhere else
 netfile="/sonas-hs/gillis/hpc/home/sballouz/sballouz/human/RNAseq/outliers/networks/blood.rerank.Rdata"
 label="blood.rerank"
     nettype= label
@@ -1560,7 +1558,7 @@ save(results.mat,file="task1_results_GOarm.mat.Rdata")
 ```
 
 ```{r}
-load("U:/armadillo/updated/task1_results_GOarm.mat.Rdata")
+load("task1_results_GOarm.mat.Rdata")
 filt1 = (results.mat[,1] >= 20  & results.mat[,1] <= 1000)
 heatmap.3( -log10(results.mat[filt1,9:13]),Colv=F, col=cols5)
 heatmap.3( (results.mat[filt1,4:8]),Colv=F, col=magma(20))
@@ -1583,16 +1581,16 @@ heatmap.3( (results.mat[filt1,4:8][filt1_sig,]),Colv=F, col=magma(13), ColSideCo
 ```
 
 ```{r}
-load("U:/armadillo/coexp/aurocs.go1.blood.clust.Rdata") 
+load("coexp/aurocs.go1.blood.clust.Rdata") 
 aurocs.go1.blood = aurocs.go1 
-load("U:/armadillo/coexp/aurocs.go1.arm.clust.Rdata") 
+load("coexp/aurocs.go1.arm.clust.Rdata") 
 aurocs.go1.arm = aurocs.go1 
 
 m = match(rownames(aurocs.go1.blood[[1]]), rownames(aurocs.go1.arm[[1]] ) )
 f.h = !is.na(m) 
 f.a = m[f.h]
 
-load("U:/armadillo/coexp/annot.agg.Rdata") 
+load("coexp/annot.agg.Rdata") 
 mn = match( names(aurocs.go1.blood[[1]][f.h,1]), names(gosums )) 
 
 
@@ -1860,11 +1858,11 @@ heatmap.3( -log10(results.mat[f.ms2,9:13][ ,]),Colv=F, col=cols5, ColSideCol=can
 
 # Compositional analysis
 ```{r}
-frac = read.table("U:/armadillo/deconvol/CIBERSORTx_Job5_Adjusted.txt", header=T, sep="\t")
+frac = read.table("deconvol/CIBERSORTx_Job5_Adjusted.txt", header=T, sep="\t")
 frac2 = t(frac[,2:7])
 barplot(frac2[,pData$Quad==j], col=inferno(6)) 
 colnames(frac2) = pData$ID
-pdf("U:/armadillo/updated/cibersort.pdf")
+pdf("cibersort.pdf")
 for(j in 1:5) {
    heatmap.3( frac2[,pData$Quad==j] , 
            col= inferno(100), 
@@ -1881,15 +1879,15 @@ dev.off()
 
 # Comparison to historical phenotypic data
 ```{r}
-load("U:/armadillo/data_from_old_papers/table1_scutes_newman1913.Rdata")
+load("data_from_old_papers/table1_scutes_newman1913.Rdata")
 o = order(scutes[,2] ) 
-pdf("U:/armadillo/data_from_old_papers/historicaldata.pdf")
+pdf("data_from_old_papers/historicaldata.pdf")
 boxplot( t(scutes[o,3:6]) ~ scutes[o,2] ) 
 hist((rowSD(scutes[o,3:6]))^2, breaks=20) 
 abline( v = sd( unlist(scutes[,3:6]))^2, lwd=2, col=2 )
 abline( v = mean(rowSD(scutes[o,3:6])^2), lwd=2, col=4 )
 
-load("U:/armadillo/data_from_old_papers/storrs_1968.Rdata")
+load("data_from_old_papers/storrs_1968.Rdata")
 boxplot( X$Body.weight ~ X$Set  )
 
 boxplot( X$Scutes ~ X$Set  )
