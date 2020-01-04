@@ -1,4 +1,10 @@
 ### Data
+
+#### Expression data 
+Expression values for all quads at all timepoints are in: 
+- counts_strand_comb.Rdata
+- cpm_strand_comb.Rdata
+
 #### Perfect predictor genes 
 Genes that were able to predict armadillos across time, per quad can be found in this file: 
 - perfect.pred.arm.Rdata 
@@ -15,6 +21,8 @@ Each contains these:
 - homol.all2 -> gene conversion ids between species 
 
 ### Code
+See notebooks[../notebooks] for all the analyses. 
+
 #### Perfect predictors
 ```
 load("ref.strand.test_train.Rdata")
