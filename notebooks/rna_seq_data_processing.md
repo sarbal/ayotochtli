@@ -10,7 +10,7 @@ files = as.character(unlist(read.table("runs") ))
 genecounts = "ReadsPerGene.out.tab"
 splicejunctions = "SJ.out.tab"
 logname = "Log.final.out"
-load("Y:/armadillo/ensembl/dasNov3.0.95/gene_annotations_v0.95.Rdata")
+load("gene_annotations_v0.95.Rdata")
 
 dir = "outs/"
 
