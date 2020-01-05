@@ -4,11 +4,11 @@ output: html_notebook
 ---
 # ASE data 
 ```{r}
-load("exprs.all.Rdata")
+load("exprs_all.Rdata")
 load("metadata.Rdata")
 source("useful.r")
 load("ase_ratios.test_train.Rdata")
-load("gene_annotations_v0.95_mod.Rdata")
+load("gene_annotations_v0.95.Rdata")
 load("armadillo.helper.Rdata")
 # Variables 
 n_quads = 5
@@ -270,7 +270,7 @@ plots.box = sapply(1:15, function(i) plot( cor.ase[f.zz&f.na[,i],i] ~ 1*(cor.all
 
 # SNPs 
 ```{r}
-load("U:/armadillo/updated/snps.overlaps.Rdata")
+load("snps.overlaps.Rdata")
 names(x)  = quads 
 library(UpSetR)
 upset(fromList(x), order.by = "freq", sets=names(x), keep.order=T, sets.bar.color = candy_colors[1:5])
@@ -281,7 +281,7 @@ venn( x, zcol=candy_colors , cexil = 1, cexsn = 1.5, ellipse=T)
 
 ```{r}
 
-chrminfo = read.table("U:/armadillo/updated/chromInfo.txt.gz")
+chrminfo = read.table("chromInfo.txt.gz")
 chrmadd = cumsum(round(chrminfo[,2]/1e3))
 chrmadd = c(0, chrmadd[-length(chrmadd)])
 chrminfo[,3] = chrmadd*1e3
@@ -326,12 +326,12 @@ dev.off()
 
 # X scaffolds 
 ```{r}
-chain = read.table("Y:/armadillo/ucsc_annot/chrX.chainHg38.txt")
+chain = read.table("chrX.chainHg38.txt")
 scaff.sizes = unique(chain[,3:4]  )
 
 library(rtracklayer)
 # human 
-chainObject <- import.chain("Y:/armadillo/ucsc_annot/hg38ToDasNov3.over.chain")
+chainObject <- import.chain("hg38ToDasNov3.over.chain")
 grObject <- GRanges(seqnames=c("chrX"), ranges=IRanges(start=2, end=156040895))
 results <- as.data.frame(liftOver(grObject, chainObject))
 hist(results[,6], xlab="Length of alignment", main="hg38")
@@ -341,7 +341,7 @@ scaff.sums = (tapply( results[,6], results[,3], sum) )
 scaff.range1 = (tapply( results[,4], results[,3], min) )
 scaff.range2 = (tapply( results[,5], results[,3], max) )
 scaff.range = scaff.range2 - scaff.range1
-pdf("u:/armadillo/updated/scaffolds.length.pdf")
+pdf("scaffolds.length.pdf")
 hist(results[,6], xlab="Length of alignment", main="hg38", breaks=100)
 dev.off() 
 
@@ -374,7 +374,7 @@ f.sr = m[f.sx]
 plot(  log10(scaff.sizes[f.s,2]) , prop, pch=19 , xlab="Scaffold length (log10 bp)", ylab="Fraction aligned to chrX")
 points(  log10(scaff.sizes[f.s,2][f.sr]) , prop[f.sr], pch=19 , col=2) 
 
-pdf("U:/armadillo/updated/scaffolds.pdf")
+pdf("/scaffolds.pdf")
 zones=matrix(c(2,0,1,3), ncol=2, byrow=TRUE)
 layout(zones, widths=c(4/5,1/5), heights=c(1/5,4/5))
 x = log10(scaff.sizes[f.s,2])
@@ -417,7 +417,7 @@ dev.off()
 
 
 # mouse 
-chainObject <- import.chain("Y:/armadillo/ucsc_annot/mm10ToDasNov3.over.chain")
+chainObject <- import.chain("mm10ToDasNov3.over.chain")
 grObject <- GRanges(seqnames=c("chrX"), ranges=IRanges(start=2, end=156040895))
 results <- as.data.frame(liftOver(grObject, chainObject))
 hist(results[,6], xlab="Length of alignment", main="mm10")
@@ -468,7 +468,7 @@ f.sr = m[f.sx]
 plot(  log10(scaff.sizes[f.s,2]) , prop, pch=19 , xlab="Scaffold length (log10 bp)", ylab="Fraction aligned to chrX")
 points(  log10(scaff.sizes[f.s,2][f.sr]) , prop[f.sr], pch=19 , col=2) 
 
-pdf("U:/armadillo/updated/scaffolds.mouse.pdf")
+pdf("scaffolds.mouse.pdf")
 zones=matrix(c(2,0,1,3), ncol=2, byrow=TRUE)
 layout(zones, widths=c(4/5,1/5), heights=c(1/5,4/5))
 x = log10(scaff.sizes[f.s,2])
@@ -515,7 +515,7 @@ dev.off()
 ## Ratios 
 ```{r}
 scaffoldsX = scaffoldsX.prop
-# load(file="U:/armadillo/updated/skew.est.max.genes.Rdata" )
+# load(file="skew.est.max.genes.Rdata" )
 
 folded <- function(x) { apply( cbind(x,1-x), 1, max)} 
 unfold <- function(x) { c(x,1-x) } 
@@ -645,7 +645,7 @@ polygon(  ( c(bootCI3$percent[4],bootCI3$percent[5],bootCI3$percent[5],bootCI3$p
 # ASE identity tests
 ## X scaffolds 
 ```{r}
-# load("U:/armadillo/updated/Xscaffolds.Rdata")
+# load("Xscaffolds.Rdata")
 scaffoldsX = scaffoldsX.prop3 
 scaffoldsX = scaffoldsX.sub
 
@@ -781,7 +781,7 @@ for(i in 1:n_quads) {
   gene.counts.max[[i]] =  colSums(exprs.all.filt.max[[i]][exprs.all.filt.max[[i]]$name==gene ,7:18]  )
 }
 
-pdf("U:/armadillo/updated/tlr1.example.pdf")
+pdf("tlr1.example.pdf")
 hist(as.numeric(gene.ratios), main=gene, xlab="Imbalance ratios")
 boxplot( t(gene.ratios) ~ quads, col = candy_colors[c(2,1,3:5)], xlab="Quad", ylab="Imbalance ratio")
 hist( log2(1+exprs.gene), xlab="Expression (log2 1 + CPM)")
@@ -793,8 +793,3 @@ dev.off()
 
 ```
 
-
-## Comparing ASE and reg predictability 
-```{r}
-load("../updated/perfect.pred.Rdata")
-```
