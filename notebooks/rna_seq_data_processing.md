@@ -10,7 +10,7 @@ files = as.character(unlist(read.table("runs") ))
 genecounts = "ReadsPerGene.out.tab"
 splicejunctions = "SJ.out.tab"
 logname = "Log.final.out"
-load("gene_annotations_v0.95.Rdata")
+load("gene_annotations_v0_95_mod.Rdata")
 
 dir = "outs/"
 
@@ -76,8 +76,8 @@ genecounts = "ReadsPerGene.out.tab"
 splicejunctions = "SJ.out.tab"
 logname = "Log.final.out"
 
-load("Y:/armadillo/ensembl/dasNov3.0.95/gene_annotations_v0.95_spikeins.Rdata")
-load("Y:/armadillo/ensembl/ercc.conc.Rdata")
+load("gene_annotations_v0.95_spikeins.Rdata")
+load("ercc.conc.Rdata")
 
 dir = "outs/"
 
@@ -139,7 +139,7 @@ dir = "outs/"
 # Plot spike-ins
 
 ```{r}
-load("U:/armadillo/reference_genomes/outs/armadillo_ref_counts.Rdata") 
+load('armadillo_ref_counts.Rdata") 
 X.cpm = calc_cpm(counts_exp)
 f.a = (attr$assembly=="spikein")
 m = match(attr[f.a,1], concentrations[,2] ) 
@@ -190,8 +190,8 @@ i = 22
 hist(rSG[[i]][f.zz & !g2[[i]]], col=3, freq=F, main=functionalsetnames[i], xlab="Proportional stability - correlations")
 hist(rSG[[i]][f.zz & g2[[i]]], add=T, col=2, freq=F )
 
-
-
 ```
+
+
  
   
