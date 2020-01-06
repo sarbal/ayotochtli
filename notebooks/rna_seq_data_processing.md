@@ -15,7 +15,7 @@ Note, these should be available soon - apologies if links are still not working.
 ## Setup genome index
 Create genome file with spike-ins 
 ```
-
+cat dasNov3.fa spike.fa > dasNov3_spike.fa 
 ```
 
 ```
@@ -28,12 +28,6 @@ Create genome file with spike-ins
 --sjdbOverhang 100                 \
 --limitGenomeGenerateRAM 40115748224
 ```
-
-
-```
-```
-
-
 
 ## Run STAR 
 ```
@@ -249,9 +243,64 @@ igvtools='~/IGVTools/igvtools.jar'
 
 ## Call and filter for variants
 Using quad15-50 as an example. Replace with different quads. 
-Note, these were run as bash scripts. 
+### Call variants 
+```
+~/gatk-4.1.0.0/gatk HaplotypeCaller \
+   -R dasNov3.fa \
+   -I 15F501-15F502-15F503-15F504.sort.dedup.realign.bam \
+   -O 15F501-15F502-15F503-15F504.raw_variants_nong.vcf
+
+~/gatk-4.1.0.0/gatk SelectVariants \
+-R dasNov3.fa  \
+-V 15F501-15F502-15F503-15F504.raw_variants_nong.vcf  \
+-O raw_snps.vcf \
+--select-type-to-include SNP
+
+~/gatk-4.1.0.0/gatk SelectVariants \
+-R dasNov3.fa  \
+-V 15F501-15F502-15F503-15F504.raw_variants_nong.vcf \
+-O raw_indels.vcf \
+--select-type-to-include INDEL
+
+```
+### Filter 
+```
+~/gatk-4.1.0.0/gatk VariantFiltration \
+-R dasNov3.fa  \
+-V raw_indels.vcf \
+-O filtered_indels.vcf \
+--filter-name "basic_snp_filter1" \
+--filter-expression "QD < 2.0" \
+--filter-name "basic_snp_filter2" \
+--filter-expression "FS > 200.0" \
+--filter-name "basic_snp_filter3" \
+--filter-expression "ReadPosRankSum < -20.0" \
+--filter-name "basic_snp_filter4" \
+--filter-expression "SOR > 10.0" 
+```
+
+```
+~/gatk-4.1.0.0/gatk VariantFiltration \
+-R dasNov3.fa  \
+-V raw_snps.vcf \
+-O filtered_snps.vcf \
+--filter-name "basic_snp_filter1" \
+--filter-expression "QD < 2.0" \
+--filter-name "basic_snp_filter2" \
+--filter-expression "FS > 60.0" \
+--filter-name "basic_snp_filter3" \
+--filter-expression "MQ < 40.0" \
+--filter-name "basic_snp_filter4" \
+--filter-expression "MQRankSum < -12.5" \
+--filter-name "basic_snp_filter5" \
+--filter-expression "ReadPosRankSum < -8.0" \
+--filter-name "basic_snp_filter6" \
+--filter-expression "SOR > 4.0" 
+```
+ 
 
 
+### Select homozygous alts 
 ```
 zgrep '^#'  filtered_snps.vcf.gz > header.vcf
 zgrep PASS filtered_snps.vcf.gz | grep '1/1' > filtered_snps.pass.vcf
@@ -267,6 +316,7 @@ mv filtered_indels.pass2.vcf filtered_indels.pass.vcf
 
 ```zgrep filtered_snps.vcf.gz | awk '{OFS="\t"; if (!/^#/){print $1,$2,$2,$4"/"$5,".","+","."}}' > 15-50.bed
 ```
+
 ```~/g2gtools convert -i 15-50.bed -c 15-50.vci.gz -o 15-50.conv.bed
 ```
 
