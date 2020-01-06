@@ -2,9 +2,14 @@
 title: "R Notebook"
 output: html_notebook
 ---
+
+# Download data: 
+Umbrella project id: [PRJNA595587](https://www.ncbi.nlm.nih.gov/bioproject/?term=PRJNA595587)
+DNA: [PRJNA591897](https://www.ncbi.nlm.nih.gov/bioproject/?term=PRJNA591897)
+RNA: [PRJNA595370](https://www.ncbi.nlm.nih.gov/bioproject/?term=PRJNA595370) [SRP237365](https://www.ncbi.nlm.nih.gov/sra/?term=SRP237365) [GSE141951](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE141951)
  
-#Reference genomes  
-# Ignoring spike-ins
+# Reference genomes  
+## Ignoring spike-ins
 ```{r}
 files = as.character(unlist(read.table("runs") ))
 genecounts = "ReadsPerGene.out.tab"
@@ -69,7 +74,7 @@ dir = "outs/"
 
 
 
-# Spike in version 
+## Including spike ins
 ```{r}
 files = as.character(unlist(read.table("runs") ))
 genecounts = "ReadsPerGene.out.tab"
@@ -136,7 +141,7 @@ dir = "outs/"
 
 ```
 
-# Plot spike-ins
+### Plotting spike-ins
 
 ```{r}
 load('armadillo_ref_counts.Rdata") 
@@ -154,7 +159,7 @@ boxplot( t(log10(counts_exp[f.a,][f.o,][o,]) ),pch=19, col=makeTransparent(1), x
 ```
  
  
-# Stability 
+### Stability analysis  
 ```{r}
 # i # gene
 # j # dataset
@@ -193,5 +198,5 @@ hist(rSG[[i]][f.zz & g2[[i]]], add=T, col=2, freq=F )
 ```
 
 
- 
-  
+# Personal genomes 
+## For each quad, download their personal genomes from: 
