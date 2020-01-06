@@ -3,12 +3,49 @@ title: "R Notebook"
 output: html_notebook
 ---
 
-# Download data: 
-Umbrella project id: [PRJNA595587](https://www.ncbi.nlm.nih.gov/bioproject/?term=PRJNA595587)
-DNA: [PRJNA591897](https://www.ncbi.nlm.nih.gov/bioproject/?term=PRJNA591897)
-RNA: [PRJNA595370](https://www.ncbi.nlm.nih.gov/bioproject/?term=PRJNA595370) [SRP237365](https://www.ncbi.nlm.nih.gov/sra/?term=SRP237365) [GSE141951](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE141951)
- 
+# Download data:
+Note, these should be available soon - apologies if links are still not working... 
+
+- Project here: [PRJNA595587](https://www.ncbi.nlm.nih.gov/bioproject/?term=PRJNA595587)
+- DNA: [PRJNA591897](https://www.ncbi.nlm.nih.gov/bioproject/?term=PRJNA591897)
+- RNA: [PRJNA595370](https://www.ncbi.nlm.nih.gov/bioproject/?term=PRJNA595370) [SRP237365](https://www.ncbi.nlm.nih.gov/sra/?term=SRP237365) [GSE141951](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE141951)
+
+
 # Reference genomes  
+## Setup genome index
+Create genome file with spike-ins 
+```
+
+```
+
+```
+~/STAR/STAR_2.7  \
+--runThreadN 4       \
+--runMode genomeGenerate  \
+--genomeDir /dasNov3.0.95/  \
+--genomeFastaFiles dasNov3_spike.fa  \
+--sjdbGTFfile Dasypus_novemcinctus.Dasnov3.0.95_mod.spike.gtf    \
+--sjdbOverhang 100                 \
+--limitGenomeGenerateRAM 40115748224
+```
+
+
+```
+```
+
+
+
+## Run STAR 
+```
+~/STAR/STAR_2.7  \
+--genomeDir dasNov3.0.95/ \
+--runThreadN 12 \
+--readFilesIn *1.fastq *2.fastq  \
+--outSAMtype BAM Unsorted \
+--quantMode GeneCounts 
+```
+
+
 ## Ignoring spike-ins
 ```{r}
 files = as.character(unlist(read.table("runs") ))
@@ -199,4 +236,180 @@ hist(rSG[[i]][f.zz & g2[[i]]], add=T, col=2, freq=F )
 
 
 # Personal genomes 
-## For each quad, download their personal genomes from: 
+## Setup
+- For each quad, download their personal genomes. 
+- Make sure you have samtools, GATK (v3). 
+```
+picard='~/GenomeAnalysisTK/picard.jar'
+GATK='~/GenomeAnalysisTK/GenomeAnalysisTK.jar'
+igvtools='~/IGVTools/igvtools.jar'
+```
+
+
+
+## Call and filter for variants
+Using quad15-50 as an example. Replace with different quads. 
+Note, these were run as bash scripts. 
+
+
+```
+zgrep '^#'  filtered_snps.vcf.gz > header.vcf
+zgrep PASS filtered_snps.vcf.gz | grep '1/1' > filtered_snps.pass.vcf
+ cat header.vcf filtered_snps.pass.vcf > filtered_snps.pass2.vcf
+mv filtered_snps.pass2.vcf filtered_snps.pass.vcf
+
+zgrep '^#'  filtered_indels.vcf.gz > header2.vcf
+zgrep PASS filtered_indels.vcf.gz | grep '1/1' > filtered_indels.pass.vcf
+ cat header2.vcf filtered_indels.pass.vcf > filtered_indels.pass2.vcf
+mv filtered_indels.pass2.vcf filtered_indels.pass.vcf
+
+```
+
+```zgrep filtered_snps.vcf.gz | awk '{OFS="\t"; if (!/^#/){print $1,$2,$2,$4"/"$5,".","+","."}}' > 15-50.bed
+```
+```~/g2gtools convert -i 15-50.bed -c 15-50.vci.gz -o 15-50.conv.bed
+```
+
+
+### Count
+```
+grep '1/1' raw_indels.vcf -c
+grep '1/1' raw_snps.vcf -c
+grep '0/1' raw_indels.vcf -c
+grep '0/1' raw_snps.vcf -c
+zgrep '1/1' filtered_indels.vcf.gz  | wc -l 
+zgrep '1/1' filtered_snps.vcf.gz  | wc -l 
+zgrep '0/1' filtered_indels.vcf.gz | wc -l 
+zgrep '0/1' filtered_snps.vcf.gz | wc -l 
+```
+
+ 
+
+## Convert reference to personal genome 
+If you do not have enough memory for these tasks, you can split the genome into ~40 or so chunks and repeat on each part. It is a pain. 
+```
+##  Create VCI file of the sample
+~/g2gtools-0.2.7/g2gtools vcf2vci -o 15-50.vci -p 16 -i  filtered_snps.pass.vcf.gz -i filtered_indels.pass.vcf.gz -s '15F501-15F502-15F503-15F504'  -f dasNov3.fa --pass --quality 
+
+
+## Incorporate SNPs into the reference genome
+~/g2gtools-0.2.7/bin/g2gtools patch   -p 16 -i dasNov3.fa  -c 15-50.vci.gz -o 15-50.patched.dasNov3.fa 
+
+## Incorporate indels into the reference genome and get custom diploid genome for the sample.
+~/g2gtools-0.2.7/bin/g2gtools transform -i 15-50.patched.dasNov3.fa  -c 15-50.vci.gz -o 15-50.dasNov3.fa -p 16
+
+## Liftover gene annotation onto sample coordinates.
+~/g2gtools-0.2.7/bin/g2gtools convert -i Dasypus_novemcinctus.Dasnov3.0.95_test.gtf -c 15-50.vci.gz -o 15-50.gtf              
+cat 15-50.gtf 15-50.gtf.unmapped > 15-50.merged.gtf
+```
+
+
+In R, generate the gene annotation file for the quad: 
+```{r}
+id = "quad15-50"
+id2 = "15-50"
+
+setwd("../")
+setwd(id)
+ 
+temp = read.table( paste0(id2,".merged.gtf"),  header=F, sep="\t")
+filt = temp[,3] == "gene"
+mat = strsplit( as.character(temp[filt,9]), ";")
+
+ids = sapply(1:length(mat), function(i) mat[[i]][1] )
+ids = gsub( "gene_id ", "", ids)
+
+checks = grep('gene_name', mat)
+genename = rep ("", length(ids))
+for ( i in checks) {
+	grep('gene_name', mat[[i]])
+	genename[i] = mat[[i]][grep('gene_name', mat[[i]])]
+}
+genename = gsub( " gene_name ", "", genename)
+
+
+checks = grep('gene_biotype', mat)
+genetype = rep ("", length(ids))
+for ( i in checks) {
+	genetype[i] = mat[[i]][grep('gene_biotype', mat[[i]])]
+}
+genetype = gsub( " gene_biotype ", "", genetype)
+
+
+part1 = cbind( temp[filt,1:8], ids , genetype, genename)
+part1[,2] = id 
+part1 = part1[,-3]
+part1 = part1[,-5]
+part1 = part1[,-6]
+
+colnames(part1) = c("scaffold", "quad", "start","end",  "strand", "ensemblID", "type",  "name" )
+attr = part1
+save(attr, file=paste0("gene_annotations_v0.95.", id, ".Rdata")) 
+```
+
+
+
+## Map to personal genomes 
+First, generate personal genome index: 
+```
+~/STAR/STAR_2.7  \
+--runThreadN 4       \
+--runMode genomeGenerate  \
+--genomeDir  quad15-50/   \
+--genomeFastaFiles 15-50.trans.fa  \
+--sjdbGTFfile 15-50.gtf  \
+--sjdbOverhang 100                 \
+--limitGenomeGenerateRAM 40048639360
+```
+Then map: 
+```
+~/STAR/STAR_2.7  \
+--genomeDir dasNov3.0.95/quad15-50/ \
+--runThreadN 12 \
+--readFilesIn *1.fastq *2.fastq  \
+--outSAMtype BAM Unsorted \
+--quantMode GeneCounts 
+```
+
+## Allele-specific expression with personal genome alignments 
+
+```
+genome=~/quad15-10/15-10.trans.fa
+
+samtools faidx 15-50.trans.fa
+java -jar ~/GenomeAnalysisTK/picard.jar CreateSequenceDictionary R=15-50.trans.fa O=15-50.trans.dict
+```
+
+```
+echo "Adding read groups to bam file"
+ java -jar  $picard AddOrReplaceReadGroups \
+    I=Aligned.sorted.filt.bam  \
+    O=Aligned.sorted.rg.bam \
+    SO=coordinate RGID=id RGLB=library RGPL=platform RGPU=machine RGSM=sample
+
+ echo "Marking duplicates"
+java -jar $picard MarkDuplicates \
+    I=Aligned.sorted.rg.bam  \
+    O=Aligned.sorted.dedupped.bam  \
+    CREATE_INDEX=true VALIDATION_STRINGENCY=SILENT M=output.metrics
+
+echo "Splitting and trimming"
+java -jar $GATK \
+   -T SplitNCigarReads         \
+   -R $genome \
+   -I Aligned.sorted.dedupped.bam \
+   -o Aligned.sorted.split.bam  \
+   -rf ReassignOneMappingQuality -RMQF 255 -RMQT 60 -U ALLOW_N_CIGAR_READS
+
+echo "Counting SNPs"
+java -jar $GATK \
+   -T ASEReadCounter \
+   -R quad15-50/15-50.trans.fa \
+   -o test.counts.csv \
+   -I Aligned.sorted.split.bam \
+   -sites 15-50.bed.vcf \
+   -U ALLOW_N_CIGAR_READS
+```
+
+
+
