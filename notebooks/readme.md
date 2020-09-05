@@ -4,7 +4,8 @@
 - [Gene-expression analysis](gene_expression_notebook.md)
 - [Allele-specific expression](ase_analysis_notebook.md)
 - [Human comparisons](human_notebook.md)
-- [Other](genome_analysis.md)
+- [Genome](genome_analysis.md)
+- [Simulations](simulations.md)
 
 
 
