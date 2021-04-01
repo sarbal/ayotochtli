@@ -1,3 +1,5 @@
+require(gtools) 
+
 prediction_gene_scores <- function(training, testing, geneset){
   t1 = 1:dim(training)[2]
   t2 = 1:dim(testing)[2]
@@ -131,7 +133,5 @@ prediction_gene_scores_indiv <- function(training, testing, geneset){
    temp[[j]] = id_score[[1]]
   } 
    return(unlist(temp) ) 
- 
-  
 }
 
