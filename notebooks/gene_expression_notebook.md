@@ -895,7 +895,7 @@ for (r in 1:1000){
  
 ```
 
-## Prefect predictor nulls
+## Perfect predictor nulls
 ```{r}
 load(file="null.perfect.pred.Rdata")
 
