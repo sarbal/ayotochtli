@@ -1,7 +1,3 @@
-
-
-
-```
 cat Dasypus_novemcinctus.Dasnov3.0.95_mod.spike.gtf |  awk 'OFS="\t" {if ($3=="gene") {print $1,$4-1,$5,$10,".",$7}}' | tr -d '";'  > Dasypus_novemcinctus.Dasnov3.0.95_mod.spike.bed
 
 bedtools flank -i Dasypus_novemcinctus.Dasnov3.0.95_mod.spike.bed -g chrNameLength.txt -l 2000 -r 0 -s > genes.2kb.promoters.bed
@@ -17,4 +13,3 @@ cat Dasypus_novemcinctus.Dasnov3.0.95_mod.spike.gtf |  awk 'OFS="\t" {if ($3=="e
 bedtools nuc -fi dasNov3_spike.fa -bed Dasypus_novemcinctus.Dasnov3.0.95_mod.spike.exons.bed > Dasypus_novemcinctus.Dasnov3.0.95_mod.spike.genome.content
 
 bedtools nuc -fi dasNov3_spike.fa -bed Dasypus_novemcinctus.Dasnov3.0.95_mod.spike.CDS.bed > Dasypus_novemcinctus.Dasnov3.0.95_mod.spike.genome.content.CDS
-```
