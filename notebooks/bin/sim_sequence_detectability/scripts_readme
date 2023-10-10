@@ -1,1 +1,16 @@
+# ROC curves and AUROCs
+08.31.2020 Risa K. Kawaguchi
 
+## Naming rule
+* each\_roc\_cellstage\_rep(100)\_SNPfrequency(0.001)\_lm\_coverage.rds
+
+## Contents
+* FPR TPR quad
+The pairs of FPR and TPR are obtained from the p-value vector and true/negative answer vector for all SNPs using roc function in R. They should contain 100 ROC curves for each quad.
+At the bottom of simulate_min_cov_snp.r, you can run the program to draw ROC curves.
+If the flag on line 213 is true, it can compute ROC curves. Otherwise, it draws ROC curves via a function plot.auroc.only.
+A function plot.smooth.roc.data contains the actual drawing process, in which FPR values are binned to 10 bins and average TPR is used for the y coordinate.
+
+ 
+## Naming rule
+* plot\_roc\_cellstage\_rep(100)\_SNPfrequency(0.001)\_lm\_coverage\_msd_bin size(10)\_mean.pdf
