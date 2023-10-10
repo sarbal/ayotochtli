@@ -1,5 +1,6 @@
 quiet <- suppressPackageStartupMessages 
 
+## Libraries/packages 
 if( ! quiet(require("gplots")))
   install.packages("gplots")
 
@@ -45,9 +46,15 @@ if( !quiet(require("tidyverse")))
 if( !quiet(require("RSkittleBrewer")))
   install_github('alyssafrazee/RSkittleBrewer')
 
-sex_colors = c("red", "blue")
+if( !quiet(require("akima")))
+  install.packages("akima")
 
-# Colors
+if( !quiet(require("boot")))
+  install.packages("boot")
+
+
+
+## Colors
 cols = colorpanel(16, "red", "blue")
 cols2 = brewer.pal(8, "Spectral")
 cols3= rainbow(30)
@@ -68,11 +75,11 @@ tropical = RSkittleBrewer('tropical')
 wildberry = RSkittleBrewer('wildberry')
 mm = RSkittleBrewer('M&M')
 candy_colors = c("red3","purple4","darkorange1","green3","#26C3F0","brown") 
+sex_colors = c("red", "blue")
 
 
 
-
-### 
+## Identity prediction functions  
 prediction_gene_scores <- function(training, testing, geneset){
   t1 = 1:dim(training)[2]
   t2 = 1:dim(testing)[2]
@@ -120,16 +127,6 @@ count_identity_mod <- function( temp1) {
   return (list(score, id.list))
 }
 
-convolve_x <- function(x,xc,n){
-  xcc =  convolve(xc, rev(x), type="open")
-  if (n ==1){
-    return(xcc)
-  } else {
-    return(convolve_x(x, xcc, n-1) ) 
-  }
-}
-
-
 count_identities_analytic <- function(n){
   A = permutations(n=n,r=n, v=1:n) 
   scores = matrix(0, ncol=1,nrow=dim(A)[1])
@@ -174,8 +171,6 @@ count_identities_analytic <- function(n){
 
 
 
-
-
 prediction_gene_scores_mod <- function(training, testing, geneset){
   t1 = 1:dim(training)[2]
   t2 = 1:dim(testing)[2]
@@ -209,9 +204,6 @@ prediction_gene_scores_indiv <- function(training, testing, geneset){
 }
 
 
-
- 
-
 convolve_x <- function(x,xc,n){
   xcc =  convolve(xc, rev(x), type="open")
   if (n ==1){
@@ -222,8 +214,7 @@ convolve_x <- function(x,xc,n){
 }
 
 
-
-
+## Folded and unfolded normal distributions 
 folded <- function(x) { apply( cbind(x,1-x), 1, max)} 
 unfold <- function(x) { c(x,1-x) } 
 
@@ -241,104 +232,53 @@ mle_folded <- function(){
 } 
 
 
-library(boot)
+
+## Variance to N relationship 
 foo <- function(i,j) { 
   return( 0.25/(sd(unfold(i[j]))^ 2))
 } 
 
 
-
-
-# Convolved distributions 
-
-A = count_identities_analytic(4)
-h = hist(A, breaks=c(-1:4))
-x = h$counts 
-
-x15r = convolve_x(x,x,14)
-x5r = convolve_x(x,x,4)
-x3r = convolve_x(x,x,2)
-x9r = convolve_x(x,x,8)
-
-# Analytic nulls
-pval.rsum = cbind((0:12)/3, rev(cumsum(rev(x3r/sum(x3r)))) ) 
-pval.csum = cbind((0:20)/5, rev(cumsum(rev(x5r/sum(x5r)))) ) 
-pval.sum = cbind((0:60)/15, rev(cumsum(rev(x15r/sum(x15r)))) ) 
-pval.sum2 = cbind((0:36)/9, rev(cumsum(rev(x9r/sum(x9r)))) ) 
-pval.raw = cbind(0:4, rev(cumsum(rev(x/sum(x)))) )
-pval.sum[pval.sum[,2] < 0.5e-15,2]  = 2e-16
-pval.sum2[pval.sum2[,2] < 0.5e-15,2]  = 2e-16
-# save(pval.csum, pval.raw, pval.rsum, pval.sum, pval.sum2, x15r, x9r, x5r, x3r, x, convolve_x, quadlabels, timelabels,sexlabels, labels, quads, tlab, lane, sex, quad, pData, count_identities_analytic, count_identity_mod, prediction_gene_scores, original_colors, tropical_colors, mm_colors,  candy_colors, file="armadillo.helper.Rdata")
-
-
-
-# Random functions
-rank_std <- function(x)  { r = rank( x, na.last="keep"); r/max(r, na.rm=T)  }
-colSD <- function( data){ return(apply( data, 2, sd, na.rm=T))}
-rowSD <- function( data){ return(apply( data, 1, sd, na.rm=T))}
-colSE <- function( data){ return( apply( data, 2, sd, na.rm=T)/sqrt(dim(data)[2]))}
-rowSE <- function( data){ return( apply( data, 1, sd, na.rm=T)/sqrt(dim(data)[1]))}
-se    <- function(x){ sd(x,na.rm=T)/sqrt(length(!is.na(x))) }
-rmse  <- function(error){sqrt(mean(error^2, na.rm=T) )}
-mae   <- function(error){ mean(abs(error), na.rm=T)}
-
-geo_mean <- function(data) {
-  log_data <- log(data)
-  gm <- exp(mean(log_data[is.finite(log_data)]))
-  return(gm)
+## Gene set enrichment 
+gene_set_enrichment <- function(genes, genes.labels, voc){
+  
+  genes.names = rownames(genes.labels)
+  labels.names = colnames(genes.labels)
+  genes.counts = rowSums(genes.labels)
+  labels.counts = colSums(genes.labels)              			# p
+  
+  m = match ( genes, genes.names )
+  filt.genes  = !is.na(m)
+  filt.labels = m[filt.genes]
+  
+  labels.counts.set = rep( sum(filt.genes), length(labels.counts) )	# g
+  
+  m = match (labels.names, voc[,1])
+  v.f = !is.na(m)
+  v.g = m[v.f]
+  
+  universe = rep ( dim(genes.labels)[1], dim(genes.labels)[2])
+  if(  length(filt.labels) == 1 ) { 
+    genes.counts.set = genes.labels[filt.labels,]  
+    test =  cbind(   (genes.counts.set -1) , labels.counts, universe-labels.counts, labels.counts.set) # check again 
+  } else { 
+    genes.counts.set = colSums(genes.labels[filt.labels,]) 
+    test =  cbind( (genes.counts.set -1) , labels.counts, universe-labels.counts, labels.counts.set)
+  }             ## does weird things with 0 sets
+  
+  
+  pvals = phyper(test[,1], test[,2], test[,3], test[,4], lower.tail=F)
+  sigs = pvals < ( 0.05/length(pvals) )
+  pvals.adj = p.adjust( pvals, method="BH")
+  
+  results = cbind(voc[v.g,1:2], test[v.f,c(1,2)], pvals[v.f], pvals.adj[v.f], sigs[v.f])
+  colnames(results) = c("term", "descrp","p", "q", "pvals", "padj", "sig" )
+  
+  return (results)
+  
 }
 
-geo_sd <- function(data) {
-  log_data <- log(data)
-  gs <- exp(sd(log_data[is.finite(log_data)]))
-  return(gs)
-}
-
-geo_se <- function(data) {
-  gs <- geo_sd(data)
-  log_data <- log(data)
-  gse <- gs/sqrt(sum(is.finite(log_data)))
-  return(gse)
-}
-
-
-lm.studentized  <- function(x,y){
-  z = lm(y ~ x )
-  z = rstudent(z)
-  return( rank(abs(z)) )
-}
-
-lm.function  <- function(x,y){
-  z = lm(y ~ x )
-  return( rank(abs(z$residuals)) )
-}
-
-
-residuals <- function(x,y,A,B,C){ (A*x + B*y + C) }
-residuals2 <- function(x,y,A,B,C) { (A*x + B*y + C)/sqrt(A^2+B^2) }
-residuals3 <- function(x,y,A,B,C) { abs(A*x + B*y + C)/sqrt(A^2+B^2) }
-
-z_scores <- function(x) {
-  mean_x = mean(x, na.rm=T)
-  sd_x = sd(x, na.rm=T)
-  z =  (x - mean_x) / (sd_x)
-  return(z)
-}
-
-z_scores_mod <- function(x) {
-  med_x = median(x, na.rm=T)
-  mad_x = median(abs(x-med_x), na.rm=T)
-  z =  0.6745 * (x - med_x) / (mad_x)
-  return(z)
-}
-
-calc_cpm <-function(X){
-  K  = colSums(X)
-  X.cpm = sapply(1:length(K), function(k) 10^6*X[,k]/K[k] )
-  return(X.cpm)
-}
-
-
+## Visualisations 
 heatmap.3 <- function(mat, ...){
   heatmap.2( mat, ..., density="none", trace="none")
 }
@@ -378,14 +318,78 @@ vioplot.3 <- function(x,colin=cols3,plotpoints=FALSE,xlab="", ylab="",...){
 
 
 
-
-
-# Transparent colors
 makeTransparent<-function(someColor, alpha=100)
 {
   newColor<-col2rgb(someColor)
   apply(newColor, 2, function(curcoldata){rgb(red=curcoldata[1], green=curcoldata[2],
                                               blue=curcoldata[3],alpha=alpha, maxColorValue=255)})
+}
+
+
+
+## Random functions
+rank_std <- function(x)  { r = rank( x, na.last="keep"); r/max(r, na.rm=T)  }
+colSD <- function( data){ return(apply( data, 2, sd, na.rm=T))}
+rowSD <- function( data){ return(apply( data, 1, sd, na.rm=T))}
+colSE <- function( data){ return( apply( data, 2, sd, na.rm=T)/sqrt(dim(data)[2]))}
+rowSE <- function( data){ return( apply( data, 1, sd, na.rm=T)/sqrt(dim(data)[1]))}
+se    <- function(x){ sd(x,na.rm=T)/sqrt(length(!is.na(x))) }
+rmse  <- function(error){sqrt(mean(error^2, na.rm=T) )}
+mae   <- function(error){ mean(abs(error), na.rm=T)}
+residuals <- function(x,y,A,B,C){ (A*x + B*y + C) }
+residuals2 <- function(x,y,A,B,C) { (A*x + B*y + C)/sqrt(A^2+B^2) }
+residuals3 <- function(x,y,A,B,C) { abs(A*x + B*y + C)/sqrt(A^2+B^2) }
+
+geo_mean <- function(data) {
+  log_data <- log(data)
+  gm <- exp(mean(log_data[is.finite(log_data)]))
+  return(gm)
+}
+
+geo_sd <- function(data) {
+  log_data <- log(data)
+  gs <- exp(sd(log_data[is.finite(log_data)]))
+  return(gs)
+}
+
+geo_se <- function(data) {
+  gs <- geo_sd(data)
+  log_data <- log(data)
+  gse <- gs/sqrt(sum(is.finite(log_data)))
+  return(gse)
+}
+
+
+lm.studentized  <- function(x,y){
+  z = lm(y ~ x )
+  z = rstudent(z)
+  return( rank(abs(z)) )
+}
+
+lm.function  <- function(x,y){
+  z = lm(y ~ x )
+  return( rank(abs(z$residuals)) )
+}
+
+
+z_scores <- function(x) {
+  mean_x = mean(x, na.rm=T)
+  sd_x = sd(x, na.rm=T)
+  z =  (x - mean_x) / (sd_x)
+  return(z)
+}
+
+z_scores_mod <- function(x) {
+  med_x = median(x, na.rm=T)
+  mad_x = median(abs(x-med_x), na.rm=T)
+  z =  0.6745 * (x - med_x) / (mad_x)
+  return(z)
+}
+
+calc_cpm <-function(X){
+  K  = colSums(X)
+  X.cpm = sapply(1:length(K), function(k) 10^6*X[,k]/K[k] )
+  return(X.cpm)
 }
 
 
@@ -425,26 +429,6 @@ get_counts <- function(hist)
   return(cbind(x,y))
 }
 
-# Tic toc functions
-tic <- function(gcFirst = TRUE, type=c("elapsed", "user.self", "sys.self"))
-{
-  type <- match.arg(type)
-  assign(".type", type, envir=baseenv())
-  if(gcFirst) gc(FALSE)
-  tic <- proc.time()[type]
-  assign(".tic", tic, envir=baseenv())
-  invisible(tic)
-}
-
-toc <- function()
-{
-  type <- get(".type", envir=baseenv())
-  toc <- proc.time()[type]
-  tic <- get(".tic", envir=baseenv())
-  print(toc - tic)
-  invisible(toc)
-}
-
 convolve_nets <- function(netA,netB,f){
   n <- order(netA)
   temp_netA <- netA[n]
@@ -452,45 +436,6 @@ convolve_nets <- function(netA,netB,f){
   temp_netB = convolve( netB[n], rep(1,f),type="filter")
   convolved = cbind(temp_netA[(f/2):(length(temp_netA)-f/2)],temp_netB/f)
 }
-
-gene_set_enrichment <- function(genes, genes.labels, voc){
-  
-  genes.names = rownames(genes.labels)
-  labels.names = colnames(genes.labels)
-  genes.counts = rowSums(genes.labels)
-  labels.counts = colSums(genes.labels)              			# p
-  
-  m = match ( genes, genes.names )
-  filt.genes  = !is.na(m)
-  filt.labels = m[filt.genes]
-  
-  labels.counts.set = rep( sum(filt.genes), length(labels.counts) )	# g
-  
-  m = match (labels.names, voc[,1])
-  v.f = !is.na(m)
-  v.g = m[v.f]
-  
-  universe = rep ( dim(genes.labels)[1], dim(genes.labels)[2])
-  if(  length(filt.labels) == 1 ) { 
-    genes.counts.set = genes.labels[filt.labels,]  
-    test =  cbind(   (genes.counts.set -1) , labels.counts, universe-labels.counts, labels.counts.set) # check again 
-  } else { 
-    genes.counts.set = colSums(genes.labels[filt.labels,]) 
-    test =  cbind( (genes.counts.set -1) , labels.counts, universe-labels.counts, labels.counts.set)
-  }             ## does weird things with 0 sets
-  
-  
-  pvals = phyper(test[,1], test[,2], test[,3], test[,4], lower.tail=F)
-  sigs = pvals < ( 0.05/length(pvals) )
-  pvals.adj = p.adjust( pvals, method="BH")
-  
-  results = cbind(voc[v.g,1:2], test[v.f,c(1,2)], pvals[v.f], pvals.adj[v.f], sigs[v.f])
-  colnames(results) = c("term", "descrp","p", "q", "pvals", "padj", "sig" )
-  
-  return (results)
-  
-}
-
 
 calc_fdrs_recur  <- function( data, pp = 0.05) {
   
@@ -515,7 +460,6 @@ calc_fdrs_recur  <- function( data, pp = 0.05) {
   names(res) = c("FDR", "test", "Pt", "sig", "pp")
   return( res )
 }
-
 
 
 shuffle_cols <- function( data ) {
@@ -546,17 +490,22 @@ count_recur <- function(data,nmax){
 
 
 
-shuffle_cols <- function( data ) {
-  nc = dim(data)[2]
-  nr = dim(data)[1]
-  return (sapply(1:nc, function(i) data[sample(nr),i] ))
-}
+## Convolved distributions for armadillos 
+A = count_identities_analytic(4)
+h = hist(A, breaks=c(-1:4))
+x = h$counts 
 
+x15r = convolve_x(x,x,14)
+x5r = convolve_x(x,x,4)
+x3r = convolve_x(x,x,2)
+x9r = convolve_x(x,x,8)
 
-
-shuffle_rows <- function( data ) {
-  nc = dim(data)[2]
-  nr = dim(data)[1]
-  return (t(sapply(1:nr, function(i) data[i,sample(nc)] )))
-}
-
+# Analytic nulls
+pval.rsum = cbind((0:12)/3, rev(cumsum(rev(x3r/sum(x3r)))) ) 
+pval.csum = cbind((0:20)/5, rev(cumsum(rev(x5r/sum(x5r)))) ) 
+pval.sum = cbind((0:60)/15, rev(cumsum(rev(x15r/sum(x15r)))) ) 
+pval.sum2 = cbind((0:36)/9, rev(cumsum(rev(x9r/sum(x9r)))) ) 
+pval.raw = cbind(0:4, rev(cumsum(rev(x/sum(x)))) )
+pval.sum[pval.sum[,2] < 0.5e-15,2]  = 2e-16
+pval.sum2[pval.sum2[,2] < 0.5e-15,2]  = 2e-16
+# save(pval.csum, pval.raw, pval.rsum, pval.sum, pval.sum2, x15r, x9r, x5r, x3r, x, convolve_x, quadlabels, timelabels,sexlabels, labels, quads, tlab, lane, sex, quad, pData, count_identities_analytic, count_identity_mod, prediction_gene_scores, original_colors, tropical_colors, mm_colors,  candy_colors, file="armadillo.helper.Rdata")
