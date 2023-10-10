@@ -1,4 +1,4 @@
-STAR=/sonas-hs/gillis/hpc/home/sballouz/STAR/STAR_2.7
+STAR=~/STAR/STAR_2.7
 
 genome=$1
 inDir=$2
