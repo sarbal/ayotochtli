@@ -3,8 +3,19 @@ title: "Simulations"
 output: html_notebook
 ---
 
-## Haplosufficiency model
 ## SNP binomial modeling 
+```
+
+```
+
+## Haplosufficiency model
+```
+```
+
 ## Time consistency and deviation 
+```
+```
+
 ## Sequence detectability 
- 
+```
+``` 
