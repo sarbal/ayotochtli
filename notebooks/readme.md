@@ -6,7 +6,7 @@
 
 ### Gene and allele specific expression (ASE)
 - [Gene-expression analysis](gene_expression_notebook.md)
-- [Quantification](ase_analysis_notebook.md)
+- [Quantification and ASE](ase_analysis_notebook.md)
 - [SNP binomial modeling](simple_binom_sim.ipynb)
 - [Simulations](p_est_simulation.ipynb)
 - [SNP binomial modeling (paired)](simple_binom_pair_sim.ipynb)
