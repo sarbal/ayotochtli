@@ -4,13 +4,12 @@
 - [RNA-seq and WGS processing](rna_seq_data_processing.md)
 - [Genome assessment](genome_analysis.md)
 
-### Allele specific expression (ASE)
-- [Quantification](ase_analysis_notebook.md)
-- [Simulations](simulations.md)
-
-### Other
-- [Human comparisons](human_notebook.md)
+### Gene and allele specific expression (ASE)
 - [Gene-expression analysis](gene_expression_notebook.md)
+- [Quantification](ase_analysis_notebook.md)
+- [SNP binomial modeling](simple_binom_sim.ipynb)
+- [Simulations](p_est_simulation.ipynb)
+- [SNP binomial modeling (paired)](simple_binom_pair_sim.ipynb)
 
 ### Figures 
 - [Figure 1](fig1.md)
