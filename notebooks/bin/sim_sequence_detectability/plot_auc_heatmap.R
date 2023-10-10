@@ -10,7 +10,7 @@ cov_vec <- ceiling(10**(cov_quantile))
 print(cov_vec)
 
 read.cov.dist <- function() {
-    sdf <- readRDS('/home/rkawaguc/ipython/ayotochtli/simple_independent_result.rds')
+    sdf <- readRDS('simple_independent_result.rds')
     cov <- c()
     all_data <- c()
     for (i in 1:length(sdf)) {
