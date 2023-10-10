@@ -6,7 +6,7 @@ output: html_notebook
 ```{r}
 load("exprs_all.Rdata")
 load("metadata.Rdata")
-source("useful.r")
+source("armadillo_helper.r")
 load("ase_ratios.test_train.Rdata")
 load("gene_annotations_v0.95.Rdata")
 load("armadillo.helper.Rdata")
