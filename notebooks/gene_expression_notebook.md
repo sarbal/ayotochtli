@@ -141,7 +141,6 @@ save(sim.within, sim.across, colslist, colslist2, colslist3,sim.comb, sim.comb2,
 require(DESeq2)
 require(statmod)
 
-
 # Per quad per timepoint
 var.fits = list()
 for(i in 1:n_qt){
@@ -308,7 +307,7 @@ for(j in 1:n_quads) {
 ```
 
 ```{r}
-pdf("anova.plots.pdf") 
+#pdf("anova.plots.pdf") 
 for(j in 1:n_quads){ 
   nnj = min(as.numeric(pData$altID[pData$Quad==j]))  - 1 
   
@@ -365,12 +364,13 @@ vioplot.2( quad.hi.pzsco.list,
           ylab="Z-score expression")
 
 } 
-dev.off() 
+#dev.off() 
 
 ```
 
 
 # Identity analysis 
+## Set up testing and training data
 ```{r}
 # Testing 
 X.tt1 = X.rank2[,r_samp]            # time point 1
@@ -451,7 +451,6 @@ for(j in 1:n_quads){
   EGAD::conv_smoother(x[filt], y[filt], 100)
   title(quads[j])
 }
-
 ```
 
 
@@ -461,7 +460,6 @@ for(j in 1:n_quads){
 nr = 1:20
 nr2 = nr/20
 xlab="Correlated genes threshold"
-
 
 pred.scores.list = list() 
 pval.scores.list = list() 
@@ -505,13 +503,8 @@ for(k in nr2){
   setsizes.scores.list[[i]] = setsizes.temp
   genesets.scores.list[[i]] = genesets.temp
   scorematrix.list[[i]] = scorematrix.temp
-  
-  
   i = i + 1
 }
-
-
-
 
 cd = sapply(nr, function(i) mean(pred.scores.list[[i]]))
 bc = sapply(nr, function(i) colMeans(pred.scores.list[[i]]))
@@ -612,11 +605,9 @@ plot( pval.sum, pch=19, xlab="Average score", ylab="Cummulative Density", type="
 abline(v=cd[k], col=4, lty=2)
 abline(h=cd.pval[k], col=4, lty=2)
 abline(v=1, col=2, lty=2)
-
-
 ```
 
-# Null - this takes time, run only once 
+## Null - this takes time, run only once 
 ```{r, eval=FALSE }
 filename="cpm_test_train.Rdata"; dataset ="cpm"
 
@@ -647,7 +638,7 @@ save( cr,cr.sd , cr.se , rand.q, nr3,  file=paste0("random.sets.", dataset, ".Rd
 
 ```
 
-# Plot
+## Plot
 ```{r}
 load(paste0("random.sets.", dataset, ".Rdata") )
 
@@ -680,7 +671,7 @@ abline(v=log10(mean(setsizes.scores.list[[k]])), col=2)
 
 
 
-# Perfect predictors
+## Perfect predictors
 ```{r}
 require(venn)
 
@@ -704,17 +695,17 @@ for(j in 1:n_quads){
  heatmap.3(temp4, main=quads[j], col=cividis(5))
 } 
 
-pdf("heatmaps.modules.pdf")
+#pdf("heatmaps.modules.pdf")
 for(j in 1:n_quads){ 
  temp4 =  cor(t(X.rank2[f.zz,][which(perfect.pred[f.zz,j]==1),pData$Quad==j]), m="s")
  heatmap.3(temp4, main=quads[j], col=magma(10))
 } 
-dev.off() 
+#dev.off() 
 
 ```
 
 ```{r}
-pdf("perfect.pred.prop.pdf")
+#pdf("perfect.pred.prop.pdf")
 hist(log2(1+X.cpm.all[f.zz,]), 
      freq=F, 
      col=viridis(10)[5], 
@@ -729,15 +720,12 @@ hist(log2(1+X.cpm.all[f.zz,][unique(unlist(perfect.pred.list)) ,]),
      xlab="log2 (1 + CPM)")
 abline( v = mean(log2(1+X.cpm.all[f.zz,][unique(unlist(perfect.pred.list)) ,])) , col=2, lwd=2   )
 
-
-
 par(mfrow=c(2,3))
 for(i in 1:n_quads){
-  
-plot(log2(1+rowMeans(X.cpm.all[f.zz,pData$Quad==i][which(perfect.pred[f.zz,i]==1),])),
-log2(1+rowMeans(X.cpm.all[f.zz,pData$Quad!=i][which(perfect.pred[f.zz,i]==1),])), pch=19, main=quads[i], 
-xlab="Average log2 CPM + 1", ylab="Average log2 CPM+1 all other quads")
-abline(0,1)  
+  plot(log2(1+rowMeans(X.cpm.all[f.zz,pData$Quad==i][which(perfect.pred[f.zz,i]==1),])),
+  log2(1+rowMeans(X.cpm.all[f.zz,pData$Quad!=i][which(perfect.pred[f.zz,i]==1),])), pch=19, main=quads[i], 
+  xlab="Average log2 CPM + 1", ylab="Average log2 CPM+1 all other quads")
+  abline(0,1)  
 } 
 
 
@@ -764,8 +752,6 @@ for(i in 1:n_quads){
     rowSD((X.cpm.all[f.zz,pData$Quad==i] )),  
     rowSD((X.cpm.all[f.zz,pData$Quad!=i])),-1,1,0) )
   
-
-
   
 par(mfrow=c(2,3))
 for(i in 1:n_quads) { 
@@ -776,15 +762,10 @@ abline(v= mean( res.sds[[i]]), col=candy_colors[i], lwd=2)
 hist(unlist(res.sds) , main="", xlab="Residuals of the SDs (log2 + 1 CPM)", col=1, border=NA) 
 abline(v= mean( unlist(res.sds)), col=2, lwd=2) 
 
-
-dev.off()
-
-
-
-
+#dev.off()
 ```
 
-
+### Perfect predictor clusters
 ```{r}
 temp.clust = list() 
 clust = list() 
@@ -794,8 +775,6 @@ for( j in 1:5){
   clust[[j]] = cutree ( h, h=1)
   temp.clust[[j]] = temp
 }
-
-
 
 perfect.pred.clust = list() 
 for( j in 1:n_quads){
@@ -810,28 +789,19 @@ for( j in 1:n_quads){
 }
 
 perfect.pred.clust = do.call(cbind, perfect.pred.clust)
-
-
 perfect.pred.clust = cbind(perfect.pred, 1*(rowSums(perfect.pred, na.rm=T)>0), perfect.pred.clust)
-
 colnames(perfect.pred.clust)[6] = "union"
-
-
 ```
-
 
 ```{r}
 for(ji in which(colSums(perfect.pred.clust) > 5)){ 
   j = which( substr( colnames(perfect.pred.clust)[ji],1,4 ) == quads) 
   temp  = X.zscores[f.zz,pData$Quad==j][which(perfect.pred.clust[f.zz,ji]==1),]
   temp4 = X.rank2[f.zz,][which(perfect.pred.clust[f.zz,ji]==1),pData$Quad==j]
-
-  
+ 
   X_c = 1:3
-  
   Y_c = colMeans(temp)
   std_Y_c = colSD(temp)
-  
   xlab="Time point"
   ylab = "Z-scores"
   ymin = -2
@@ -849,7 +819,6 @@ for(ji in which(colSums(perfect.pred.clust) > 5)){
             col = makeTransparent(tropical_colors[ti]), border = NA)
     points(X_c, Y_c[ft], pch=19, col = tropical_colors[ti])
   }
-  
 }
  
 save(res.sds2, res.sds, perfect.pred, perfect.pred.list, perfect.pred.clust, file="cpm_perfect_pred.Rdata" ) 
@@ -857,8 +826,7 @@ save(res.sds2, res.sds, perfect.pred, perfect.pred.list, perfect.pred.clust, fil
 
 # Predictive gene models 
 ## Perfect predictor model 1 
-```{r, eval=FALSE}
-# 
+```{r}
 N = dim(X.cpm.all)[1]
 
 rand.all= list()
@@ -901,26 +869,15 @@ for (r in 1:1000){
                 & X.tr2[f.zz,((1:n_q)+n_q*(j-1))] == X.tt2[f.zz,((1:n_q)+n_q*(j-1))]  
                 & X.tr3[f.zz,((1:n_q)+n_q*(j-1))] == X.tt3[f.zz,((1:n_q)+n_q*(j-1))]) == n_q )
   )
-
-  
 } 
   save(rand.all , file="null_perfect_pred.Rdata") 
-
-```
-
-## Perfect predictor nulls
-```{r}
-load( file="null.perfect.pred.Rdata")
-
 
 hist(unlist(rand.all ) , freq=F, col="grey", border=NA, xlim=c(0,100))
 # abline(v=mean(unlist(rand.all ) ), lwd=2, col=1)
 abline(v= colSums(perfect.pred[f.zz,], na.rm=T), col=original_colors[1:5], lwd=2)
 
-
 perfect.pred.ns = colSums(perfect.pred[f.zz,]  )
 rand.pred  = t(do.call (cbind, rand.all ) )
-
 
 perfect.pred.ns.mean =  mean(perfect.pred.ns)
 rand.pred.mean  = rowMeans(rand.pred) 
@@ -930,10 +887,63 @@ abline(v=mean(rand.pred.mean  ), lwd=2, col=1)
 abline(v= perfect.pred.ns.mean , col=4, lwd=2)
 
 ```
-## Perfect predictors model 2  (null)
-```{r, eval = FALSE}
-load("model.preds.cds.Rdata")
 
+## Perfect predictors model 2  (null)
+```{r}
+preds.cds = list()
+maxns = sort(c(10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,193,200,300,400,500,600,700,800,900,1000)) 
+ 
+for( maxn in maxns ){
+  print(maxn)
+  # Adding predictors
+  pred.scores.list = list()
+  n = floor(maxn/5) 
+  for(r in 1:100){
+    X.tt1 = X.tt1.orig
+    X.tr1 = X.tr1.orig
+    X.tt2 = X.tt2.orig
+    X.tr2 = X.tr2.orig
+    X.tt3 = X.tt3.orig
+    X.tr3 = X.tr3.orig
+    # Testing 
+    for(j in 1:5){
+      # j = 1   
+      ki = 1:4 + 4 *(j-1)
+      s1 = sample(sum(f.zz),n)
+      s2 = s1
+      s3 = s1
+      # s2 = sample(sum(f.zz),n)
+      #  s3 = sample(sum(f.zz),n)
+      
+      for(i in ki){
+        X.tt1[f.zz,][s1,i] <- X.tr1[f.zz,][s1,i] 
+        X.tt2[f.zz,][s2,i] <- X.tr2[f.zz,][s2,i]  
+        X.tt3[f.zz,][s3,i] <- X.tr3[f.zz,][s3,i] 
+      }
+    }
+    
+    
+    pred.temp = matrix(0, ncol=3, nrow=5)
+    for(j in 1:5){
+      inds = pData$ID[c(((1:4)+4*(j-1)), ((1:4)+4*(j-1)) + 20, ((1:4)+4*(j-1)) + 40)]
+      ki = ((1:4)+4*(j-1))
+      q1 = 1:sum(f.zz)
+      q2 = q1
+      q3 = q1 
+      t1 = prediction_gene_scores( X.tr1[f.zz,ki], X.tt1[f.zz,ki], q1) 
+      t2 = prediction_gene_scores( X.tr2[f.zz,ki], X.tt2[f.zz,ki], q2) 
+      t3 = prediction_gene_scores( X.tr3[f.zz,ki], X.tt3[f.zz,ki], q3) 
+      pred.temp[j,] = c(t1[[2]],t2[[2]],t3[[2]])
+    }
+    pred.scores.list[[r]] = pred.temp 
+    
+  }
+  preds.cds[[maxn]] = sapply(1:100, function(i) mean(pred.scores.list[[i]]))
+  
+} 
+save(preds.cds, maxns, file="model.preds.cds.Rdata" )
+
+#load("model.preds.cds.Rdata")
 xlab="Number of genes"
 ylab="Average score"
 
@@ -951,17 +961,13 @@ points(X_c, Y_c, ylim = c(ymin, ymax) , pch=19, cex=0.5)
 
 ```
 
-
-
 ## Perfect predictors model 3 (distributed)
-```{r, eval = FALSE}
+```{r}
 load("distr.model.comb.Rdata")
 load("model.means.shuff.Rdata")
 
-
 means.propv = sapply(1:length(fracs), function(fi) mean( unlist(rand.propv[[fi]]),na.rm=T))
 means.fcs = sapply(1:length(fracs), function(fi) mean( unlist(rand.dist[[fi]]),na.rm=T))
-
  
 i = 1 
 propve.fcs = list()
