@@ -1,8 +1,8 @@
 # Figure 3 
-
+```
 source("armadillo_helper.r")
 source("load_fig3_data.r")
-
+```
 
 ## Panel A
 ```
