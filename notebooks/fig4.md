@@ -1,24 +1,31 @@
 # Figure 4 
-
+```
 source("armadillo_helper.r")
 source("load_fig4_data.r")
+```
 
 # Panel A 
-
+```
 ### Calculate and plot density for background ASE 
 ase_data = lapply( c(2,64), function(i) rbinom(1e5, i, 0.5)/i )
 ase_dens = lapply(1:2, function(i) density(ase_data[[i]] , bw=0.01)) 
 plot(ase_dens[[1]], col=0 , main="")
 lapply(1:2, function(i) polygon(ase_dens[[i]], col=EGAD::make_transparent(viridis(5))[i]))
+```
+![model1](figs/fig4A1.png)
 
+```
 ### Calculate and plot CDF for disease model background 
 dise_data =  rbeta(1e5, 10, 1)
 hd = hist(dise_data, breaks=c(0:100)/100)
 cdf = cumsum(hd$counts )
 plot(hd$mids, cdf, type="l", lwd=2, xlab="Allelic ratios", ylab="CDF")
+```
+![model1](figs/fig4A2.png)
 
 
 # Panel B 
+```
 mat = mat.list$both 
 mat[mat == 0] = 1e-20
 
@@ -58,6 +65,8 @@ filled.contour( log2(cnum), rev(-mutation_rate), t( mat[41:1,]),
                             levels = c(0.01,0.5,0.999 ), add=T, col="white") ;    
                 }
 ) 
+```
+![model1](figs/fig4B.png)
 
 
 
