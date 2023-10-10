@@ -3,7 +3,7 @@ title: "Armadillo transcriptional identity"
 output: html_notebook
 ---
 
-# Load data
+### Load data
 ```{r}
 source("armadillo_helper.r")
 load("cpm.strand.comb.Rdata")
