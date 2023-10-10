@@ -1,0 +1,34 @@
+# Imbalanced SNP detection
+
+04.28.2020 Risa KK.
+
+## Scripts
+
+* Data exploring and conversion
+  * simple_binom_pair_sim.ipynb
+    * -> compute correlation between 1-2 and 1-3 time points
+  * simple_binom_sim.ipynb
+    * discarded
+* Empirical p-value computation
+  * comp_obs_and_emp_p.r
+    * -> estimate a background p for binomial and simulate 10000 times
+* Visualization
+  * analyze_model_pvalue.r
+  * -> 
+
+
+
+## Workflow
+
+* Make rds files by simple_binom*_sim.ipynb
+  * simple_independent...
+    * estimate a background p independently
+  * simple_t0_independent...
+    * estimate a background p from t=0
+  * These are my first trial and computed p is not used for the later analysis
+  * Instead, correlation and basic information (read counts) are used
+* Compute empirical p-values
+  * remove SNPs on X scaffolds
+  * 
+* Integrate and visualize the results
+  * remove SNPs (ASE < 0.9 and minor allele read coverage > 10)
