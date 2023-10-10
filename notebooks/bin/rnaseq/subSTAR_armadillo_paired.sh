@@ -1,6 +1,5 @@
-STAR=/sonas-hs/gillis/hpc/home/sballouz/STAR/STAR2
-STAR=/sonas-hs/gillis/hpc/home/sballouz/STAR/STAR_2.5.2b
-genome=/sonas-hs/gillis/hpc/home/sballouz/sballouz/armadillo/ensembl/Dasnov3.0.87/
+STAR=~/STAR/STAR_2.5.2b
+genome=~/armadillo/ensembl/Dasnov3.0.87/
 
 inDir=$1
 inRead1=( $2 )
