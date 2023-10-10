@@ -1,5 +1,5 @@
 ---
-title: "R Notebook"
+title: "RNA-sequencing data processing"
 output: html_notebook
 ---
 
@@ -41,6 +41,7 @@ cat dasNov3.fa spike.fa > dasNov3_spike.fa
 
 
 ## Ignoring spike-ins
+In R: 
 ```{r}
 files = as.character(unlist(read.table("runs") ))
 genecounts = "ReadsPerGene.out.tab"
@@ -101,11 +102,16 @@ dir = "outs/"
                 colnames(counts_exp) = files
                 save(Ns, counts_exp, file=paste(dir, "/counts.Rdata", sep=""))
 
+counts = counts_exp
+save(counts, file=paste(dir, "/counts_strand_comb.Rdata", sep=""))
+X.cpm.all = calc_cpm(counts_exp)
+save(X.cpm.all, file=paste(dir, "/cpm_strand_comb.Rdata", sep=""))
 ```
 
 
 
 ## Including spike ins
+In R: 
 ```{r}
 files = as.character(unlist(read.table("runs") ))
 genecounts = "ReadsPerGene.out.tab"
@@ -173,7 +179,7 @@ dir = "outs/"
 ```
 
 ### Plotting spike-ins
-
+In R: 
 ```{r}
 load('armadillo_ref_counts.Rdata") 
 X.cpm = calc_cpm(counts_exp)
@@ -191,7 +197,10 @@ boxplot( t(log10(counts_exp[f.a,][f.o,][o,]) ),pch=19, col=makeTransparent(1), x
  
  
 ### Stability analysis  
+In R: 
 ```{r}
+load("functionalsets.Rdata")
+
 # i # gene
 # j # dataset
 # k # value/cell
@@ -209,7 +218,6 @@ hist(rERCC[!f.a][f.zz], border=NA, col=viridis(10)[3], main="", xlab="Absolute s
 f.old = (attr$assembly=="ensembl")
 
 
-load("U:/armadillo/functionalsets.Rdata")
 # Proportional stability
 g = f.old
 g2 = list() 
