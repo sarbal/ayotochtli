@@ -5,7 +5,7 @@ output: html_notebook
 
 # Load data
 ```{r}
-source("useful.r")
+source("armadillo_helper.r")
 load("cpm.strand.comb.Rdata")
 load("counts.strand.comb.Rdata")
 load("gene_annotations_v0.95_mod.Rdata")
