@@ -5,7 +5,7 @@ source("load_fig3_data.r")
 
 
 ## Panel A
-
+```
 max_cell = 1e4
 cnum = as.numeric(rownames(m))
 ncov = as.numeric(colnames(m))
@@ -49,10 +49,13 @@ filled.contour( log2(cnum), (ncov), t(t(m)),
  
                 }
 ) 
+```
+![model1](figs/fig3A.png)
 
 
 ## Panel B  
 
+```
 plot(log2(cnum),log2(cnum), col=0, ylim=c(0.5,1), axes=F, ylab="AUROCs", xlab="Number of cells")
 for( i in 1:5){ 
   lines( log2(cnum), part[,i], lwd=2 , col=magma(10)[i])       
@@ -61,10 +64,12 @@ for( i in 1:5){
 axis(2)
 axis(1, at=log2(cnum), lab=cnum ) ; 
 legend("topright", leg=cov_vec,  col = magma(10)[1:5], pch=19, lwd=2 )
- 
+```
+![model1](figs/fig3B.png)
 
 
 ## Panel C 
+```
 nq = quad_m[,1]  
 quad_m = quad_m[,-1]  
 ncov = as.numeric(colnames(quad_m))
@@ -86,9 +91,13 @@ filled.contour( (nq), (ncov), t(t(quad_m)),
                             levels = c(0.75,0.99, 1 ), add=T, col=magma(10)[1]) ;    
                 }
 ) 
- 
+```
+![model1](figs/fig3C.png)
+
 
 ## Panel D 
+
+```
 nq_vec = c(1,5,10,50,75,100)
 part <- quad_m[rownames(quad_m) %in% nq_vec,] 
 
@@ -101,13 +110,16 @@ for( i in 1:length(nq_vec)){
 axis(2)
 axis(1 ) ; 
 legend("right", leg=nq_vec,  col = magma(10) , pch=19, lwd=2 )
-
+```
+![model1](figs/fig3D.png)
 
 
 ## Panel E 
 
 
 ## Panel G 
+
+```
 pval_score = pval.sum[match(mean(pred_score ), pval.sum [,1]),2]
 
 plot( pval.sum , pch=19, xlab="Predictability score", ylab="Cummulative Density", type="o")
@@ -116,10 +128,14 @@ abline(h=pval_score, col="darkmagenta")
 text( pred_score, 1, round(pred_score,2), cex = 1.5, font=2 ) 
 text( pred_score +0.5, 0.1, pval_score, round(pval_score,1), cex = 1.5, font=2 ) 
 abline(v=1, col="grey", lty=2,lwd=2)
+```
+![model1](figs/fig3G.png)
+
 
 
  
 ## Panel H
+```
 cr = sapply(1:length(rand.q), function(i) mean(rand.q[[i]] ) )
 cr.sd = sapply(1:length(rand.q), function(i) sd(rand.q[[i]] ) )
 cr.se = sapply(1:length(rand.q), function(i) se(rand.q[[i]] ) )
@@ -155,17 +171,23 @@ abline(h=max_score, col="darkturquoise")
 abline(v=max_ngenes, col="darkturquoise")
 points(max_ngenes,max_score,  pch=19,cex=2,col="darkturquoise")
 text(max_ngenes+1, max_score+0.1,  "All genes\n with allelic\variation",  cex=1.5, font=2)
+```
+![model1](figs/fig3H.png)
 
 
  
 ## Panel I
 
 
+![model1](figs/fig3I.png)
 
 ## Panel J
+```
 filt1 = (results.mat[,1] >= 20  & results.mat[,1] <= 1000)
 filt1_sig = rowSums((results.mat[filt1,4:8]) >= 3 ) > 0 
 temp = GO.voc[rownames(results.mat[filt1,][filt1_sig,]),]
 heatmap.3( (results.mat[filt1,4:8][filt1_sig,]),Colv=F, col=magma(13), ColSideCol=candy_colors[1:5], labCol=quads)
+```
+![model1](figs/fig3J.png)
 
 
