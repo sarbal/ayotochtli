@@ -178,7 +178,41 @@ text(max_ngenes+1, max_score+0.1,  "All genes\n with allelic\variation",  cex=1.
  
 ## Panel I
 
+```
+Nmax = 5000 
+x = ncells
+y = fracs2*Nmax
+xa = sort(rep(x, length(y)))
+ya = rep(y, length(x))
+ya[is.na(ya)] = 0
+za = array( all.mat )
+temp2 = cbind(xa,ya,za)[!is.na(za),]
+zi = interp(temp2[,1],temp2[,2], temp2[,3])
 
+conts = c(2.2) 
+x = list()
+yo = list() 
+for(i in 1:length(conts) ) {
+  cont = which(round(zi$z, 1) == conts[i], arr.ind=T)
+  x[[i]] = zi$x[cont[,1]]
+  y = zi$y[cont[,2]]
+  o = order(x[[i]])
+  x[[i]]= x[[i]][o]
+  y = y[o]
+  lo = loess(y~x[[i]])
+  yo[[i]] = predict(lo)
+}  
+
+filled.contour( log2(ncells), fracs2*Nmax,  t( all.mat), col= magma(400), levels=(0:400)/100, axes=F, 
+        xlab="Number of cells",
+                ylab="Number of genes", frame.plot=F,
+                plot.axes = { 
+               # axis(1); axis(2);
+                 axis(1, at=0:10, lab=2^(0:10)); axis(2);
+                  sapply(1, function(i) lines( log2(x[[i]]),yo[[i]], col="white", lwd=2)); 
+                contour(  log2(ncells), fracs2*Nmax,  t( all.mat), levels = c(2.2 ), add=T, col="white") ;   
+                }) 
+```
 ![model1](figs/fig3I.png)
 
 ## Panel J
