@@ -1,4 +1,27 @@
+# Finding the X chromosome in the armadillo scaffolds 
 
+### Mouse homologs 
+load("homologs.Rdata")
+load("gene_annotations_vM15.Rdata")
+attr.mouse = attr
+load("gene_annotations_v0.95_mod.Rdata")
+
+
+chrX.genes = attr.mouse$name[attr.mouse$chr == "chrX"] 
+m = match( genes.id2ids[,1], chrX.genes ) 
+f.gi = !is.na(m)
+f.xcg = m[f.gi]
+
+m = match(genes.id2ids[f.gi,3], attr$name) 
+f.x = !is.na(m)
+f.ax = m[f.x]
+freqX = count(attr$scaffold[f.ax])
+
+Xscaffolds.mouse = as.character(freqX[,1])
+
+
+
+### Human homologs
 chain = read.table("chrX.chainHg38.txt")
 scaff.sizes = unique(chain[,3:4]  )
 
