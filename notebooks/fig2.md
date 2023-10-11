@@ -104,6 +104,7 @@ abline(v=1, col="grey", lty=2,lwd=2)
 
 ## Panel F 
 ```
+pred_score = mean(pred.temp[2:4,]) # from ase_identity_xscaff
 cr = sapply(1:length(nr3), function(i) mean(rand.q3[[i]] ) )
 cr.sd = sapply(1:length(nr3), function(i) sd(rand.q3[[i]] ) )
 cr.se = sapply(1:length(nr3), function(i) se(rand.q3[[i]] ) )
@@ -123,7 +124,7 @@ axis(2)
 axis(1, at = (0:4), lab = 10^(0:4))
 
 
-nxchr_genes = log10(mean(sapply(2:4, function(j) sum(!is.na(match(ratios.max.genes[[j]][,4], scaffoldsX.sub))))))
+nxchr_genes = log10(mean(sapply(2:4, function(j) sum(!is.na(match(ratios.max.genes[[j]][,4], scaffoldsX))))))
 pval_nxchr = (1+sum( pred_score<= rand.q3[[which( log10(nr3)   >= nxchr_genes  )[1]]]))/length(rand.q3[[1]])  
 abline(h=pred_score, col="darkmagenta")
 abline(v=nxchr_genes, col="darkmagenta")
