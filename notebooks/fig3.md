@@ -121,6 +121,7 @@ colors[['No X']] <- rgb(91/255, 89/255, 166/255)
 
 tdf = readRDS("qrank_data___all_emp_p_adj_cor.rds")
 
+label = c('1'='0.1', '2'='0.01', '3'='0.001')
 ylab = "Pearson Correlation Coefficient"
 xlab = "Ranking order of -log10 FDR"
 
