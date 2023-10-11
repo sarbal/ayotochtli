@@ -119,12 +119,8 @@ legend("right", leg=nq_vec,  col = magma(10) , pch=19, lwd=2 )
 colors[['X']] <- rgb(184/255, 82/255, 157/255)
 colors[['No X']] <- rgb(91/255, 89/255, 166/255)
 
-tdf = read.csv("rank_data___all_emp_p_adj_cor.csv")
-tdf[,'qrank'] <- cut(tdf[,'rank'], seq(0, 1, 0.2), labels=seq(0.2, 1.0, 0.2), include.lowest=TRUE)
-label = c('0.2'='0.2', '0.4'='0.4', '0.6'='0.6', '0.8'='0.8', '1'='1.0')
-tdf[,'fisher'] <- tdf[,'value']
-tdf[,'value'] <- cut(tdf[,'value'], seq(0, 3, 1), labels=seq(1, 3, 1), include.lowest=TRUE)
-label = c('1'='0.1', '2'='0.01', '3'='0.001')
+tdf = readRDS("qrank_data___all_emp_p_adj_cor.rds")
+
 ylab = "Pearson Correlation Coefficient"
 xlab = "Ranking order of -log10 FDR"
 
