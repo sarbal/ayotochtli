@@ -185,7 +185,7 @@ points(X_c, Y_c, ylim = c(ymin, ymax) , pch=19, cex=0.5)
 axis(2)
 axis(1, at = (0:4), lab = 10^(0:4))
 
-
+pred_score = cd[6] # from ase_identity_noX, ratio 0.75
 nfeat_genes =  log10(mean(sapply(1:5, function(i) sapply(1:3, function(j) length(feature.genes[[i]][[j]])))))
 pval_nfeat = (sum( pred_score<= rand.q[[which( log10(nr3) >= nfeat_genes  )[1]]]))/length(rand.q[[1]])  
 
