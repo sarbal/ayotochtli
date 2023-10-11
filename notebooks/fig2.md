@@ -123,7 +123,7 @@ axis(2)
 axis(1, at = (0:4), lab = 10^(0:4))
 
 
-nxchr_genes = log10(mean(sapply(2:4, function(j) sum(!is.na(match(ratios.max.genes[[j]][,4], scaffoldsX.prop3))))))
+nxchr_genes = log10(mean(sapply(2:4, function(j) sum(!is.na(match(ratios.max.genes[[j]][,4], scaffoldsX.sub))))))
 pval_nxchr = (1+sum( pred_score<= rand.q3[[which( log10(nr3)   >= nxchr_genes  )[1]]]))/length(rand.q3[[1]])  
 abline(h=pred_score, col="darkmagenta")
 abline(v=nxchr_genes, col="darkmagenta")
