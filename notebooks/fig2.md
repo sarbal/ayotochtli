@@ -72,7 +72,19 @@ ci_range = cbind( c("variance", "ncells", "ci_boot1", "ci_boot2"), c(var,nn,boot
 
 
 ## Panel D 
+_Note, same plot as in fig3E_
+```
+colors[['X']] <- rgb(184/255, 82/255, 157/255)
 
+tdf = readRDS("qrank_data___all_emp_p_adj_cor.rds")
+label = c('1'='0.1', '2'='0.01', '3'='0.001')
+ylab = "Pearson Correlation Coefficient"
+xlab = "Ranking order of -log10 FDR"
+
+ggplot(subset(tdf[tdf[,'SNP'] == 'X',])) + geom_boxplot(aes(value, cor), fill=colors[['X']])+theme_bw()+theme(text=element_text(size=20))+
+    xlab(xlab)+ylab(ylab) + scale_x_discrete(labels=label)
+```
+![model1](figs/fig3E1.png)
 
 
 ## Panel E 
