@@ -1,36 +1,57 @@
 ### Data
 
 #### Expression data 
-Expression values for all quads at all timepoints are in: 
-- counts_strand_comb.Rdata
-- cpm_strand_comb.Rdata
+Expression values (gene counts and CPM) for all quads at all timepoints are in: 
+- [`counts_strand_comb.Rdata`](counts_strand_comb.Rdata)
+- [`cpm_strand_comb.Rdata`](cpm_strand_comb.Rdata)
+
+Allele specific expression data can be found in: 
+- [`exprs_all.Rdata`](exprs_all.Rdata)
+
+#### Phenotypes and metadata 
+- [`armadillo_hem.Rdata`](armadillo_hem.Rdata)
+- [`metadata.Rdata`]()
+
+#### Genotype information
+- [`snps_overlaps.Rdata`](snps_overlaps.Rdata)
+
+
+### Analysis outputs
+#### Testing/training splits for identity analysis 
+- [`ase_ratios.test_train.Rdata`](ase_ratios.test_train.Rdata)
+- [`cpm_test_train.Rdata`](cpm_test_train.Rdata)
+- 
+#### XCI skewing estimates 
+- [`skew.est.max.genes.Rdata`](skew.est.max.genes.Rdata)
+- [``]()
 
 #### Perfect predictor genes 
 Genes that were able to predict armadillos across time, per quad can be found in this file: 
-- perfect.pred.arm.Rdata 
+- [`perfect.pred.arm.Rdata`](perfect.pred.arm.Rdata)
 
-This contains a matrix (perfect.pred) of dimensions 33374 (genes) by 5 (quads).  
+#### SNP analysis 
+- [`black_list_homo_snps.rds`]
+- [`ase_cov.rds`](ase_cov.rds)
+- [`cumsum___emp_p_adj_cor_All.tsv`](cumsum___emp_p_adj_cor_All.tsv)
+- [`cumsum___emp_p_adj_cor_No X.tsv`](cumsum___emp_p_adj_cor_No X.tsv)
+- [`cumsum___emp_p_adj_cor_X.tsv`](cumsum___emp_p_adj_cor_X.tsv)
+- [`qrank_data___all_emp_p_adj_cor.rds`](qrank_data___all_emp_p_adj_cor.rds)
+- [``]()
 
-The human and mouse homologs of thees genes are in these files: 
-- perfect.pred.human.Rdata
-- perfect.pred.mouse.Rdata
-
-Each contains these: 
-- perfect.pred.<species> -> matrix, genes by quad
-- perfect.pred.<species>.list -> list of genes for each of the five quads 
-- homol.all2 -> gene conversion ids between species 
-
+ 
+#### Other data 
+Genome annotation
+- [`gene_annotations_v0_95_mod.Rdata`](gene_annotations_v0_95_mod.Rdata)
+Functional gene sets:
+- [`GO.arm.Rdata`](GO.arm.Rdata)
+Homologs: 
+- [`homologs.Rdata`](homologs.Rdata)
+X chromosome chains and objects
+- [`chrX.chainHg38.txt.gz`](chrX.chainHg38.txt.gz)
+- [`chrX.chainMm10.txt.gz`](chrX.chainMm10.txt.gz)
+- [`chromInfo.txt.gz`](chromInfo.txt.gz)
+- [`cytoBandIdeo.txt.gz`](cytoBandIdeo.txt.gz)
+  
 ### Code
-See [notebooks](../notebooks/) for all the analyses. 
-
-#### Perfect predictors
-```
-load("ref.strand.test_train.Rdata")
-hist(pred.all[f.zz,], breaks=c(-1:4), col=magma(5), main="", xlab="Gene scores", sub=dataset)
-hist(predcor.all[f.zz,], col=viridis(20), main="Testing", sub=dataset, xlab="Correlations")
-hist(cor.all[f.zz,], col=viridis(20), main="Training", sub=dataset, xlab="Correlations")
-
-perfect.pred.list = lapply( c(1,4,7,10,13), function(i) which(cor.all[f.zz,i]==1 & predcor.all[f.zz,i]==1 ) )
-perfect.pred = sapply( c(1,4,7,10,13), function(i) (cor.all[ ,i]==1 & predcor.all[ ,i]==1 ) )
-
-```
+See [notebooks](../notebooks/) and the [bin](../notebooks/bin/) for all the analyses and scripts. 
+ 
