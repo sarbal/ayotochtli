@@ -619,10 +619,11 @@ polygon(  ( c(bootCI3$percent[4],bootCI3$percent[5],bootCI3$percent[5],bootCI3$p
 ## X scaffolds 
 ```{r}
 # load("Xscaffolds.Rdata")
+set.seed(5)
 scaffoldsX = scaffoldsX.prop3 
 scaffoldsX = scaffoldsX.sub
 
-
+get_ase_score <- function(){
   pred.temp = matrix(0, ncol=3, nrow=5)
   pval.temp = matrix(0, ncol=3, nrow=5)
   pred.ind.temp = matrix(0, ncol=3*4, nrow=5)
@@ -656,9 +657,9 @@ scaffoldsX = scaffoldsX.sub
     setsizes.temp[j,] = c(length(q1), length(q2), length(q3)) 
   }
 
-mean(pred.temp[2:4,]) 
 save(pred.temp, pred.ind.temp, pval.temp,  setsizes.temp, file="ase_identity_xscaff.Rdata")
-
+ return(mean(pred.temp[2:4,]) )
+} 
 ```
 
 
