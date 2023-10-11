@@ -115,6 +115,13 @@ legend("right", leg=nq_vec,  col = magma(10) , pch=19, lwd=2 )
 
 
 ## Panel E 
+```
+plot.hist.all.snp.groups()
+```
+![model1](figs/fig3E1.png)
+![model1](figs/fig3E2.png)
+![model1](figs/fig3E3.png)
+![model1](figs/fig3E4.png)
 
 
 ## Panel G 
