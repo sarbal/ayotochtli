@@ -23,7 +23,13 @@ Allele specific expression data can be found in:
 - 
 #### XCI skewing estimates 
 - [`skew.est.max.genes.Rdata`](skew.est.max.genes.Rdata)
-- [``]()
+- [`estimated_ratios.Rdata`](estimated_ratios.Rdata)
+
+#### Models for identity analysis
+- [`ase_rand.null.ratios2.xsub.Rdata`](ase_rand.null.ratios2.xsub.Rdata)
+- [`ase_rand.ratios.noX.Rdata`](ase_rand.ratios.noX.Rdata)
+- [`final.model.Rdata`](final.model.Rdata)
+
 
 #### Perfect predictor genes 
 Genes that were able to predict armadillos across time, per quad can be found in this file: 
@@ -32,10 +38,8 @@ Genes that were able to predict armadillos across time, per quad can be found in
 #### SNP binomial modeling analyses
 - [`black_list_homo_snps.rds`](black_list_homo_snps.rds)
 - [`ase_cov.rds`](ase_cov.rds)
-- [`cumsum___emp_p_adj_cor_All.tsv`](cumsum___emp_p_adj_cor_All.tsv)
-- [`cumsum___emp_p_adj_cor_No X.tsv`](cumsum___emp_p_adj_cor_No X.tsv)
-- [`cumsum___emp_p_adj_cor_X.tsv`](cumsum___emp_p_adj_cor_X.tsv)
-- [`qrank_data___all_emp_p_adj_cor.rds`](qrank_data___all_emp_p_adj_cor.rds)
+The remaining files are too large to be uploaded here, but can be located at: 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8429576.svg)](https://doi.org/10.5281/zenodo.8429576)
 
  
 #### Other data 
