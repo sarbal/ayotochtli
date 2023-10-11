@@ -732,39 +732,7 @@ nr22 = sapply(nr, function(i) mean(setsizes.ase.list[[i]]))
 
 cbind(nr, nr2, nr22, cd,t(ab))
 
-
-
-```
-
-## TLR1 example
-```{r}
-gene = "TLR1"
-gene.ratios = sapply(1:n_quads, function(i) ratios.max[[i]][ratios.max.genes[[i]]$name==gene ,] ) 
-gene.ratios = apply(gene.ratios, 2, as.numeric)
-rownames(gene.ratios) = rep(1:3, 4) 
-colnames(gene.ratios) = quads
-exprs.gene = X.cpm.all[attr$name==gene,]
-gene.counts.per.allele = sapply(1:n_quads, function(i) exprs.all.filt[[i]][exprs.all.filt[[i]]$name==gene ,7:18] ) 
-gene.counts.total = list() 
-gene.counts.max = list() 
-for(i in 1:n_quads) {
-  
-  temp= exprs.all.filt[[i]][exprs.all.filt[[i]]$name==gene ,7:18]  
-  nj = dim(temp)[1]/2
-  gene.counts.total[[i]] = temp[(1:nj),] + temp[(1:nj)+ nj  ,] 
-  
-  gene.counts.max[[i]] =  colSums(exprs.all.filt.max[[i]][exprs.all.filt.max[[i]]$name==gene ,7:18]  )
-}
-
-pdf("tlr1.example.pdf")
-hist(as.numeric(gene.ratios), main=gene, xlab="Imbalance ratios")
-boxplot( t(gene.ratios) ~ quads, col = candy_colors[c(2,1,3:5)], xlab="Quad", ylab="Imbalance ratio")
-hist( log2(1+exprs.gene), xlab="Expression (log2 1 + CPM)")
-hist ( unlist(gene.counts.per.allele ), breaks= 100, main="" , xlab = "Counts per allele") 
-hist ( unlist(gene.counts.total ), breaks= 100 , main="", xlab= "Total counts") 
-plot( unlist(gene.counts.max) ,  array(gene.ratios), pch=19)
-plot( unlist(gene.counts.max) ,  exprs.gene, pch=19)
-dev.off()
+save(cd , bc , ab , de , de.pval, bc.pval, ab.pval, cd.pval, nr, nr2, nr22,  pred.ase.list, pval.ase.list, pred.indase.list,  setsizes.ase.list, file="ase_identity_noX.Rdata")   
 
 ```
 
