@@ -302,7 +302,7 @@ dev.off()
 # XCI
 ## Ratios 
 ```{r}
-scaffoldsX = scaffoldsX.prop
+scaffoldsX = scaffoldsX.sub
 # load(file="skew.est.max.genes.Rdata" )
 
 folded <- function(x) { apply( cbind(x,1-x), 1, max)} 
@@ -433,9 +433,8 @@ polygon(  ( c(bootCI3$percent[4],bootCI3$percent[5],bootCI3$percent[5],bootCI3$p
 # ASE identity tests
 ## X scaffolds 
 ```{r}
-# load("Xscaffolds.Rdata")
+load("Xscaffolds.Rdata")
 set.seed(5)
-scaffoldsX = scaffoldsX.prop3 
 scaffoldsX = scaffoldsX.sub
 
 get_ase_score <- function(){
@@ -481,6 +480,7 @@ save(pred.temp, pred.ind.temp, pval.temp,  setsizes.temp, file="ase_identity_xsc
 
 ## Feature genes  
 ```{r}
+#set.seed() 
 nr = 1:11
 nr2 = (10:20)/20
 xlab="ratio threshold"
