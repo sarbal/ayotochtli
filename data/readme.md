@@ -29,14 +29,13 @@ Allele specific expression data can be found in:
 Genes that were able to predict armadillos across time, per quad can be found in this file: 
 - [`perfect.pred.arm.Rdata`](perfect.pred.arm.Rdata)
 
-#### SNP analysis 
-- [`black_list_homo_snps.rds`]
+#### SNP binomial modeling analyses
+- [`black_list_homo_snps.rds`](black_list_homo_snps.rds)
 - [`ase_cov.rds`](ase_cov.rds)
 - [`cumsum___emp_p_adj_cor_All.tsv`](cumsum___emp_p_adj_cor_All.tsv)
 - [`cumsum___emp_p_adj_cor_No X.tsv`](cumsum___emp_p_adj_cor_No X.tsv)
 - [`cumsum___emp_p_adj_cor_X.tsv`](cumsum___emp_p_adj_cor_X.tsv)
 - [`qrank_data___all_emp_p_adj_cor.rds`](qrank_data___all_emp_p_adj_cor.rds)
-- [``]()
 
  
 #### Other data 
