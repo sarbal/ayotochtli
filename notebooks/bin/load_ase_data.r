@@ -2,8 +2,8 @@
 load("ase_ratios.test_train.Rdata")
 load("exprs_all.Rdata")
 load("metadata.Rdata")
-load("gene_annotations_v0.95.Rdata")
-load("armadillo.helper.Rdata")
+load("gene_annotations_v0_95_mod.Rdata")
+load("armadillo_helper.Rdata")
 # Variables 
 n_quads = 5
 n_times = 3 
