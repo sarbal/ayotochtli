@@ -3,7 +3,7 @@ load("counts_strand_comb.Rdata")
 load("gene_annotations_v0_95_mod.Rdata")
 load("armadillo_helper.Rdata")
 load("armadillo_hem.Rdata")
-load("ref.strand.test_train.Rdata")
+load("cpm_test_train.Rdata")
 load("metadata.Rdata")
 
 
