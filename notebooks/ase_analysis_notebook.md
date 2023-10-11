@@ -657,6 +657,7 @@ scaffoldsX = scaffoldsX.sub
   }
 
 mean(pred.temp[2:4,]) 
+save(pred.temp, pred.ind.temp, pval.temp,  setsizes.temp, file="ase_identity_xscaff.Rdata")
 
 ```
 
