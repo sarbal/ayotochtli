@@ -116,7 +116,33 @@ legend("right", leg=nq_vec,  col = magma(10) , pch=19, lwd=2 )
 
 ## Panel E 
 ```
-plot.hist.all.snp.groups()
+colors[['X']] <- rgb(184/255, 82/255, 157/255)
+colors[['No X']] <- rgb(91/255, 89/255, 166/255)
+
+tdf = read.csv("rank_data___all_emp_p_adj_cor.csv")
+tdf[,'qrank'] <- cut(tdf[,'rank'], seq(0, 1, 0.2), labels=seq(0.2, 1.0, 0.2), include.lowest=TRUE)
+label = c('0.2'='0.2', '0.4'='0.4', '0.6'='0.6', '0.8'='0.8', '1'='1.0')
+tdf[,'fisher'] <- tdf[,'value']
+tdf[,'value'] <- cut(tdf[,'value'], seq(0, 3, 1), labels=seq(1, 3, 1), include.lowest=TRUE)
+label = c('1'='0.1', '2'='0.01', '3'='0.001')
+ylab = "Pearson Correlation Coefficient"
+xlab = "Ranking order of -log10 FDR"
+
+ggplot(subset(tdf[tdf[,'SNP'] == 'X',])) + geom_boxplot(aes(value, cor), fill=colors[['X']])+theme_bw()+theme(text=element_text(size=20))+
+    xlab(xlab)+ylab(ylab) + scale_x_discrete(labels=label)
+ggplot(subset(tdf[tdf[,'SNP'] == 'No X',])) + geom_boxplot(aes(value, cor), fill=colors[['No X']])+theme_bw()+theme(text=element_text(size=20))+
+    xlab(xlab)+ylab(ylab) + scale_x_discrete(labels=label)
+
+wide_nox = read.table("cumsum___emp_p_adj_cor_No X.tsv")
+wide_x = read.table("cumsum___emp_p_adj_cor_X.tsv")
+ylab = "Cumulative ratio of deviated SNPs"
+xlab = "Pearson Correlation Coefficient"
+
+ggplot(wide_x, aes(x=crank, y=ratio)) + geom_point() + geom_smooth(method = "loess", se=FALSE, color=colors[['X']]) +
+    theme_bw()+theme(text = element_text(size=20)) +  xlab(xlab)+ylab(ylab)
+ggplot(wide_nox, aes(x=crank, y=ratio)) + geom_point() + geom_smooth(method = "loess", se=FALSE, color=colors[['No X']]) +
+    theme_bw()+theme(text = element_text(size=20)) +  xlab(xlab)+ylab(ylab)
+
 ```
 ![model1](figs/fig3E1.png)
 ![model1](figs/fig3E2.png)
