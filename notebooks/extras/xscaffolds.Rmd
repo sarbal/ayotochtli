@@ -1,0 +1,185 @@
+
+# X scaffolds 
+```{r}
+chain = read.table("chrX.chainHg38.txt")
+scaff.sizes = unique(chain[,3:4]  )
+
+library(rtracklayer)
+# human 
+chainObject <- import.chain("hg38ToDasNov3.over.chain")
+grObject <- GRanges(seqnames=c("chrX"), ranges=IRanges(start=2, end=156040895))
+results <- as.data.frame(liftOver(grObject, chainObject))
+hist(results[,6], xlab="Length of alignment", main="hg38")
+
+dim(results)
+scaff.sums = (tapply( results[,6], results[,3], sum) )
+scaff.range1 = (tapply( results[,4], results[,3], min) )
+scaff.range2 = (tapply( results[,5], results[,3], max) )
+scaff.range = scaff.range2 - scaff.range1
+pdf("scaffolds.length.pdf")
+hist(results[,6], xlab="Length of alignment", main="hg38", breaks=100)
+dev.off() 
+
+m = match(scaff.sizes[,1] , names(scaff.sums) )
+f.s = !is.na(m)
+f.ss = m[f.s]
+
+prop = scaff.range[f.ss]/scaff.sizes[f.s,2]
+
+plot(  scaff.sizes[f.s,2] , prop, pch=19 , xlab="Scaffold length (bp)", ylab="Fraction aligned to chrX")
+which( prop > 0.8 & scaff.sizes[f.s,2] > 5e6)
+
+chrX.genes = attr.human$name[attr.human$chr == "chrX"] 
+m = match(chrX.genes, attr$name) 
+f.x = !is.na(m)
+f.ax = m[f.x]
+freqX = count(attr$scaffold[f.ax])
+
+Xscaffolds = as.character(freqX[,1])
+testXX = sapply(1:5, function(j) sapply(as.character(Xscaffolds), function(chrm) sum(exprs.all.filt.max[[j]]$chrm == chrm)/2 ) )
+f.tx = rowSums(testXX) > 0  & testXX[,1] == 0 & testXX[,5] == 0 
+scaffoldsX.sub = rownames(testXX[f.tx,]) 
+
+
+m = match(scaffoldsX.sub, names(prop) )
+f.sx = !is.na(m)
+f.sr = m[f.sx]
+
+
+plot(  log10(scaff.sizes[f.s,2]) , prop, pch=19 , xlab="Scaffold length (log10 bp)", ylab="Fraction aligned to chrX")
+points(  log10(scaff.sizes[f.s,2][f.sr]) , prop[f.sr], pch=19 , col=2) 
+
+pdf("/scaffolds.pdf")
+zones=matrix(c(2,0,1,3), ncol=2, byrow=TRUE)
+layout(zones, widths=c(4/5,1/5), heights=c(1/5,4/5))
+x = log10(scaff.sizes[f.s,2])
+y = prop  
+xlab="Scaffold length (log10 bp)"
+ylab= "Fraction aligned to chrX"
+xhist0 = hist(x, plot=FALSE)
+yhist0 = hist( y, plot=FALSE)
+xhist1 = hist(x[f.sr], plot=FALSE, breaks=xhist0$breaks)
+yhist1 = hist( y[f.sr], plot=FALSE, breaks=yhist0$breaks)
+yhist1$counts = yhist1$counts/sum(yhist1$counts)
+yhist0$counts = yhist0$counts/sum(yhist0$counts)
+xhist1$counts = xhist1$counts/sum(xhist1$counts)
+xhist0$counts = xhist0$counts/sum(xhist0$counts)
+
+top = max(c(xhist1$counts, xhist0$counts, yhist0$counts, yhist1$counts))
+par(mar=c(3,3,1,1))
+plot(x,y, pch=19, main="", col=makeTransparent(1,50))
+points( x[f.sr] , y[f.sr], pch=19 , col=2, cex=1.2) 
+
+par(mar=c(0,3,1,1))
+barplot(xhist0$counts, axes=FALSE, ylim=c(0, top), space=0)
+axis(2)
+barplot(xhist1$counts, axes=FALSE, ylim=c(0, top), space=0, add=T, col=makeTransparent(2)) 
+
+par(mar=c(3,0,1,1))
+barplot(yhist0$counts, axes=FALSE, xlim=c(0, top), space=0, horiz=TRUE)
+axis(1)
+barplot(yhist1$counts, axes=FALSE, xlim=c(0, top), space=0, horiz=TRUE, add=T, col=makeTransparent(2))
+
+par(oma=c(3,3,0,0))
+mtext(xlab, side=1, line=1, outer=TRUE, adj=0,
+      at=.5 * (mean(x) - min(x))/(max(x)-min(x)))
+mtext(ylab, side=2, line=1, outer=TRUE, adj=0,
+      at=(.8 * (mean(y) - min(y))/(max(y) - min(y))))
+
+dev.off() 
+
+
+
+
+# mouse 
+chainObject <- import.chain("mm10ToDasNov3.over.chain")
+grObject <- GRanges(seqnames=c("chrX"), ranges=IRanges(start=2, end=156040895))
+results <- as.data.frame(liftOver(grObject, chainObject))
+hist(results[,6], xlab="Length of alignment", main="mm10")
+
+dim(results)
+scaff.sums = (tapply( results[,6], results[,3], sum) )
+scaff.range1 = (tapply( results[,4], results[,3], min) )
+scaff.range2 = (tapply( results[,5], results[,3], max) )
+scaff.range = scaff.range2 - scaff.range1
+pdf("u:/armadillo/updated/scaffolds.length.mouse.pdf")
+hist(results[,6], xlab="Length of alignment", main="mm10", breaks=100)
+dev.off() 
+
+m = match(scaff.sizes[,1] , names(scaff.sums) )
+f.s = !is.na(m)
+f.ss = m[f.s]
+
+prop = scaff.range[f.ss]/scaff.sizes[f.s,2]
+
+plot(  scaff.sizes[f.s,2] , prop, pch=19 , xlab="Scaffold length (bp)", ylab="Fraction aligned to chrX")
+which( prop > 0.8 & scaff.sizes[f.s,2] > 5e6)
+
+chrX.genes = attr.mouse$name[attr.mouse$chr == "chrX"] 
+load("U:/armadillo/homologs.Rdata")
+m = match(chrX.genes, homol.all[,3]) 
+f.xx = !is.na(m) 
+f.hx = m[f.xx]
+chrX.genes = homol.all[f.hx,6] 
+
+m = match( chrX.genes, attr$name) 
+f.x = !is.na(m)
+f.ax = m[f.x]
+
+
+freqX = count(attr$scaffold[f.ax])
+
+Xscaffolds = as.character(freqX[,1])
+testXX = sapply(1:5, function(j) sapply(as.character(Xscaffolds), function(chrm) sum(exprs.all.filt.max[[j]]$chrm == chrm)/2 ) )
+f.tx = rowSums(testXX) > 0  & testXX[,1] == 0 & testXX[,5] == 0 
+scaffoldsX.sub = rownames(testXX[f.tx,]) 
+
+
+m = match(scaffoldsX.sub, names(prop) )
+f.sx = !is.na(m)
+f.sr = m[f.sx]
+
+
+plot(  log10(scaff.sizes[f.s,2]) , prop, pch=19 , xlab="Scaffold length (log10 bp)", ylab="Fraction aligned to chrX")
+points(  log10(scaff.sizes[f.s,2][f.sr]) , prop[f.sr], pch=19 , col=2) 
+
+pdf("scaffolds.mouse.pdf")
+zones=matrix(c(2,0,1,3), ncol=2, byrow=TRUE)
+layout(zones, widths=c(4/5,1/5), heights=c(1/5,4/5))
+x = log10(scaff.sizes[f.s,2])
+y = prop  
+xlab="Scaffold length (log10 bp)"
+ylab= "Fraction aligned to chrX"
+xhist0 = hist(x, plot=FALSE)
+yhist0 = hist( y, plot=FALSE)
+xhist1 = hist(x[f.sr], plot=FALSE, breaks=xhist0$breaks)
+yhist1 = hist( y[f.sr], plot=FALSE, breaks=yhist0$breaks)
+yhist1$counts = yhist1$counts/sum(yhist1$counts)
+yhist0$counts = yhist0$counts/sum(yhist0$counts)
+xhist1$counts = xhist1$counts/sum(xhist1$counts)
+xhist0$counts = xhist0$counts/sum(xhist0$counts)
+
+top = max(c(xhist1$counts, xhist0$counts, yhist0$counts, yhist1$counts))
+par(mar=c(3,3,1,1))
+plot(x,y, pch=19, main="", col=makeTransparent(1,50))
+points( x[f.sr] , y[f.sr], pch=19 , col=2, cex=1.2) 
+
+par(mar=c(0,3,1,1))
+barplot(xhist0$counts, axes=FALSE, ylim=c(0, top), space=0)
+axis(2)
+barplot(xhist1$counts, axes=FALSE, ylim=c(0, top), space=0, add=T, col=makeTransparent(2)) 
+
+par(mar=c(3,0,1,1))
+barplot(yhist0$counts, axes=FALSE, xlim=c(0, top), space=0, horiz=TRUE)
+axis(1)
+barplot(yhist1$counts, axes=FALSE, xlim=c(0, top), space=0, horiz=TRUE, add=T, col=makeTransparent(2))
+
+par(oma=c(3,3,0,0))
+mtext(xlab, side=1, line=1, outer=TRUE, adj=0,
+      at=.5 * (mean(x) - min(x))/(max(x)-min(x)))
+mtext(ylab, side=2, line=1, outer=TRUE, adj=0,
+      at=(.8 * (mean(y) - min(y))/(max(y) - min(y))))
+
+dev.off() 
+```
+
