@@ -174,7 +174,6 @@ for(j in 1:5){
 
 
 
-
 for(j in 1:5){
   
   X.temp = apply(ratios.max[[j]], 2, as.numeric) 
@@ -236,7 +235,6 @@ aurocs.comp = sapply(1:15, function(i) auroc_analytic( rank(cor.ase[f.zz&f.na[,i
 aurocs.comp = sapply(1:15, function(i) auroc_analytic( rank(cor.ase[f.zz&f.na[,i],i]), 1*(cor.all[f.zz&f.na[,i],i]>0) ) )  
 
 plots.smooth = sapply(1:15, function(i) EGAD::conv_smoother( cor.ase[f.zz&f.na[,i],i], cor.all[f.zz&f.na[,i],i], 50, "", "") ) 
-
 plots.box = sapply(1:15, function(i) plot( cor.ase[f.zz&f.na[,i],i] ~ 1*(cor.all[f.zz&f.na[,i],i] > 0)  ) ) 
 
 ```
@@ -288,7 +286,7 @@ venn( x, zcol=candy_colors , cexil = 1, cexsn = 1.5, ellipse=T)
 density.plot.max = lapply(1:5, function(i) density( ratios.max[[i]][!is.na(ratios.max[[i]])], bw=0.03)  )
 density.plot.min = lapply(1:5, function(i) density( ratios.min[[i]][!is.na(ratios.min[[i]])], bw=0.03)  )
 density.plot = lapply(1:5, function(i) density( ratios[[i]][!is.na(ratios[[i]])], bw=0.03)  )
-pdf("U:/armadillo/updated/density.ase.plot.pdf")
+pdf("density.ase.plot.pdf")
 plot( density.plot.max[[1]], col=0, xlim=c(0,1), ylim=c(0,4.4), main="", xlab="Allelic ratios")
 sapply(1:5, function(i) lines( density.plot.max[[i]], lwd=3, lty=2, col = makeTransparent(candy_colors[i]) ) )
 sapply(1:5, function(i) lines( density.plot.min[[i]], lwd=3, lty=3, col = makeTransparent(candy_colors[i]) ) )
@@ -375,18 +373,9 @@ fittfold.comb.list = list()
 
 
 est_fold_means = sapply(2:4, function(j) sapply(1:4, function(i) fittfold.comb.list [[j]][[i]][[1]])) 
-
-
-# save(fittfold.comb.list,est_fold_means, est_fold_sds, folded.x.list , exprs.maybeX.prop, combined.ratios.list, file="estimated_ratios.Rdata" )
-
-
-
- # save(pvals.list, fittfold.list, est_fold.list, exprs.maybeX.prop, exprs.maybeX.sub, exprs.maybeX, ratios.maybeX.prop,ratios.maybeX, ratios.maybeX.sub,   file="skew.est.max.genes.Rdata" )
+save(fittfold.comb.list,est_fold_means, est_fold_sds, folded.x.list , exprs.maybeX.prop, combined.ratios.list, file="estimated_ratios.Rdata" )
+save(pvals.list, fittfold.list, est_fold.list, exprs.maybeX.prop, exprs.maybeX.sub, exprs.maybeX, ratios.maybeX.prop,ratios.maybeX, ratios.maybeX.sub,   file="skew.est.max.genes.Rdata" )
   
-
-
-
-
 
 hist( unfold(est_fold_means), xlab="Estimated skew",  main="", col=makeTransparent(magma(10)[3]), border=NA, xlim=c(0,1), ylim=c(0,10))
 lines( sort(unfold(p)), dnorm(sort(unfold(p)), mean = 0.5 , sd = sqrt(0.25/2) ) ,   lwd=2, col=magma(10)[1] ) 
@@ -399,10 +388,8 @@ lines( sort(unfold(p)), dnorm(sort(unfold(p)), mean = 0.5 , sd = sqrt(0.25/100) 
 
 lines( sort(unfold(p)), dnorm(sort(unfold(p)), mean = 0.5 , sd = 0.1 ) , lwd=2, col=magma(10)[7], lty=2 )  
 abline(v=est, col=magma(10)[7],lwd=2, lty=2) 
-
-
-  
 ```
+
 ##  Cell estimates 
 ```{r}
 foo <- function(i,j) { 
@@ -548,6 +535,30 @@ nr22 = sapply(nr, function(i) mean(setsizes.ase.list[[i]]))
 cbind(nr, nr2, nr22, cd,t(ab))
 
 save(cd , bc , ab , de , de.pval, bc.pval, ab.pval, cd.pval, nr, nr2, nr22,  pred.ase.list, pval.ase.list, pred.indase.list,  setsizes.ase.list, file="ase_identity_noX.Rdata")   
+
+
+
+
+feature.genes = list() 
+k = nr2[6] 
+kk =  5
+f.ase = list()
+  for(j in 1:5){
+    inds = pData$ID[c(((1:4)+4*(j-1)), ((1:4)+4*(j-1)) + 20, ((1:4)+4*(j-1)) + 40)]
+    ki = ((1:4)+4*(j-1))
+    nj=length(cor.t2t3[[j]])
+    f.ase[[j]] = (rowSums(exprs.all.filt.max[[j]][(1:nj)*2 -1 ,7:18] >= kk) == 12 ) | (rowSums(exprs.all.filt.max[[j]][(1:nj)*2  ,7:18] >= kk) == 12 )
+    
+    m = match( ratios.max.genes[[j]][,4], scaffoldsX )
+    f.nx = is.na(m) 
+    f.ase[[j]] = f.nx  &  f.ase[[j]] # no X 
+    
+    q1 = which( (rowSums(ratios.max[[j]][f.ase[[j]],-(1:4)] > k | ratios.max[[j]][f.ase[[j]],-(1:4)] < 1-k ) >= 1) )
+    q2 = which((rowSums(ratios.max[[j]][f.ase[[j]],-(5:8)] > k | ratios.max[[j]][f.ase[[j]],-(5:8)] < 1-k ) >= 1)  )
+    q3 = which((rowSums(ratios.max[[j]][f.ase[[j]],-(9:12)] > k | ratios.max[[j]][f.ase[[j]],-(9:12)] < 1-k ) >= 1) )
+    feature.genes[[j]] = list(ratios.max.genes[[j]][q1,1],ratios.max.genes[[j]][q2,1], ratios.max.genes[[j]][q3,1])
+} 
+save(feature.genes, file="ase.feature.genes.Rdata")
 
 ```
 
