@@ -20,7 +20,14 @@ Allele specific expression data can be found in:
 #### Testing/training splits for identity analysis 
 - [`ase_ratios.test_train.Rdata`](ase_ratios.test_train.Rdata)
 - [`cpm_test_train.Rdata`](cpm_test_train.Rdata)
-- 
+
+#### Identity analysis 
+- [`ase_identity_xscaff.Rdata`](ase_identity_xscaff.Rdata)
+- [`ase_identity_noX.Rdata`](ase_identity_noX.Rdata)
+
+#### Feature genes
+- [`ase.feature.genes.Rdata`](ase.feature.genes.Rdata)
+
 #### XCI skewing estimates 
 - [`skew.est.max.genes.Rdata`](skew.est.max.genes.Rdata)
 - [`estimated_ratios.Rdata`](estimated_ratios.Rdata)
@@ -30,10 +37,6 @@ Allele specific expression data can be found in:
 - [`ase_rand.ratios.noX.Rdata`](ase_rand.ratios.noX.Rdata)
 - [`final.model.Rdata`](final.model.Rdata)
 
-
-#### Perfect predictor genes 
-Genes that were able to predict armadillos across time, per quad can be found in this file: 
-- [`perfect.pred.arm.Rdata`](perfect.pred.arm.Rdata)
 
 #### SNP binomial modeling analyses
 - [`black_list_homo_snps.rds`](black_list_homo_snps.rds)
