@@ -1,8 +1,6 @@
----
-title: "Armadillo transcritional identity - ASE"
-output: html_notebook
----
-# ASE data 
+# Armadillo transcritional identity - ASE
+
+## ASE data 
 ```{r}
 source("armadillo_helper.r")
 source("load_ase_data.r")
@@ -239,7 +237,7 @@ plots.box = sapply(1:15, function(i) plot( cor.ase[f.zz&f.na[,i],i] ~ 1*(cor.all
 
 ```
 
-# SNPs 
+## SNPs 
 ```{r}
 load("snps.overlaps.Rdata")
 names(x)  = quads 
@@ -270,7 +268,7 @@ heatmap.3(t(snpdensity), col=cividis(100), Colv=F)
 
 ```
 
-# Genes with variants 
+## Genes with variants 
 ```{r}
 x = lapply(1:5, function(i) ratios.max.genes[[i]][,1] )   
 names(x)  = quads 
@@ -281,7 +279,7 @@ venn( x, zcol=candy_colors , cexil = 1, cexsn = 1.5, ellipse=T)
 
 ``` 
  
-# Allelic ratios
+## Allelic ratios
 ```{r}
 density.plot.max = lapply(1:5, function(i) density( ratios.max[[i]][!is.na(ratios.max[[i]])], bw=0.03)  )
 density.plot.min = lapply(1:5, function(i) density( ratios.min[[i]][!is.na(ratios.min[[i]])], bw=0.03)  )
@@ -297,8 +295,8 @@ dev.off()
 
 
 
-# XCI
-## Ratios 
+## XCI
+### Ratios 
 ```{r}
 scaffoldsX = scaffoldsX.sub
 # load(file="skew.est.max.genes.Rdata" )
@@ -390,7 +388,7 @@ lines( sort(unfold(p)), dnorm(sort(unfold(p)), mean = 0.5 , sd = 0.1 ) , lwd=2, 
 abline(v=est, col=magma(10)[7],lwd=2, lty=2) 
 ```
 
-##  Cell estimates 
+###  Cell estimates 
 ```{r}
 foo <- function(i,j) { 
   return( 0.25/(sd(unfold(i[j]))^ 2))
@@ -417,8 +415,8 @@ polygon(  ( c(bootCI3$percent[4],bootCI3$percent[5],bootCI3$percent[5],bootCI3$p
 
 
 
-# ASE identity tests
-## X scaffolds 
+## ASE identity tests
+### X scaffolds 
 ```{r}
 load("Xscaffolds.Rdata")
 set.seed(5)
@@ -465,7 +463,7 @@ save(pred.temp, pred.ind.temp, pval.temp,  setsizes.temp, file="ase_identity_xsc
 
 
 
-## Feature genes  
+### Feature genes  
 ```{r}
 #set.seed() 
 nr = 1:11
