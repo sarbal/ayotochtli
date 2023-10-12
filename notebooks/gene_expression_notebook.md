@@ -1,10 +1,3 @@
----
-title: "Armadillo transcriptional identity"
-output: html_notebook
-editor_options: 
-  chunk_output_type: inline
----
-
 # Armadillo transcriptional identity
 
 ### Load data 
@@ -14,7 +7,7 @@ source("load_data_all.r"
 ```
  
 
-# Transciptional analysis 
+## Transciptional analysis 
 ```{r}
 sample.cors = cor(X.cpm.all, method ="spearman", use="pair")
 
@@ -55,7 +48,7 @@ heatmap.3(sample.cors,
 
 ```
 
-# Between siblings, example
+### Between siblings, example
 ```{r}
 i = 1 
 j = 2 
@@ -66,7 +59,7 @@ plot( log2(1+X.cpm.all[,i]),  log2(1+X.cpm.all[,j]) ,
 
 ```
 
-# Across litters, example
+### Across litters, example
 ```{r}
 i = 1 
 j = 18 
@@ -78,7 +71,7 @@ plot( log2(1+X.cpm.all[,i]),  log2(1+X.cpm.all[,j]) ,
 ```
 
 
-# Cross quad comparisons 
+### Cross quad comparisons 
 ```{r}
 # Filtered correlations
 samples.cor2  = cor(X.cpm.all[f.zz ,], m="s") 
@@ -136,7 +129,7 @@ save(sim.within, sim.across, colslist, colslist2, colslist3,sim.comb, sim.comb2,
 
 ```
 
-# Highly variable genes
+## Highly variable genes
 ```{r}
 require(DESeq2)
 require(statmod)
@@ -232,7 +225,7 @@ save(recur.hvgs.q,fdrs.hvgs.q , recur.hvgs,fdrs.hvgs , recur.q, genesets, hvgs, 
 
 ```
 
-## HVGs cross-quad
+### HVGs cross-quad
 ```{r} 
 frac = 1 - n_hvgs/ sum(f.zz)
 genesets  =  1*(hvgs[ ,1:n_qt]> frac)
@@ -255,7 +248,7 @@ abline(v= mean(aurocs.q2[row(aurocs.q2) > col(aurocs.q2)], na.rm=T),   lwd=2)
 save(mf_cor, mf_cor.q,aurocs.q , aurocs.q2, genesets, hvgs,  file="hvgs_cross_quad.Rdata"  )
 ```
 
-# Phenotypic comparisons 
+## Phenotypic comparisons 
 ```{r}
 colquad <-  pData$Quad[match(hemotology[,1] , pData$altID) ]
 
@@ -275,7 +268,7 @@ for(i in is) {
 ```
 
 
-# ANOVA 
+## ANOVA 
 ```{r}
 aof <- function(x, indv, time) {
   m<-data.frame(indv,time, x);
@@ -369,8 +362,8 @@ vioplot.2( quad.hi.pzsco.list,
 ```
 
 
-# Identity analysis 
-## Set up testing and training data
+## Identity analysis 
+### Set up testing and training data
 ```{r}
 # Testing 
 X.tt1 = X.rank2[,r_samp]            # time point 1
@@ -454,8 +447,7 @@ for(j in 1:n_quads){
 ```
 
 
-# Task 1 
-## A: correlations
+### Correlations
 ```{r}
 nr = 1:20
 nr2 = nr/20
@@ -824,8 +816,8 @@ for(ji in which(colSums(perfect.pred.clust) > 5)){
 save(res.sds2, res.sds, perfect.pred, perfect.pred.list, perfect.pred.clust, file="cpm_perfect_pred.Rdata" ) 
 ```
 
-# Predictive gene models 
-## Perfect predictor model 1 
+## Predictive gene models 
+### Perfect predictor model 1 
 ```{r}
 N = dim(X.cpm.all)[1]
 
@@ -888,7 +880,7 @@ abline(v= perfect.pred.ns.mean , col=4, lwd=2)
 
 ```
 
-## Perfect predictors model 2  (null)
+### Perfect predictors model 2  (null)
 ```{r}
 preds.cds = list()
 maxns = sort(c(10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,193,200,300,400,500,600,700,800,900,1000)) 
@@ -1021,7 +1013,7 @@ filled.contour( log10(maxns), propve2.fcs[1:51], ylim=c(0.16,0.5), t( cd.dist.ma
 ```
 
 
-## B: X scaffold genes 
+### X scaffold genes 
 ```{r}
 load("Xscaffolds.Rdata")
 scaffoldsX = scaffoldsX.prop3
@@ -1107,7 +1099,7 @@ abline(v=1, col=2, lty=2)
 ```
 
 
-## C: ASE feature genes 
+### ASE feature genes 
 ```{r}
 load("ase.feature.genes.Rdata")
  
@@ -1180,7 +1172,7 @@ abline(v=1, col=2, lty=2)
 
 
 
-# Identity features: GO
+### Identity features: GO
 ```{r}
 load("GO.human.Rdata")
 
